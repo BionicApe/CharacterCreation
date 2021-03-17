@@ -1,58 +1,29 @@
 // Created by Bionic Ape. All Rights Reserved.
 
 
-#include "CharacterCreator.h"
+#include "CharacterCreatorModel.h"
 #include "CharacterCreationTypes.h"
 #include "CharacterCreatorAttribute.h"
 #include "CharacterCreatorOutfitsSet.h"
-#include <CharacterCreatorAttributesSet.h>
-#include <CharacterCreatorOutfit.h>
-#include <CharacterCreatorOutfitSlot.h>
+#include "CharacterCreatorAttributesSet.h"
 
-
-float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
-{
-	if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
-	{
-		return MorphData->MorphWeight;
-	}
-	return 0.f;
-}
-
-void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
-{
-	if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
-	{
-		MorphData->MorphWeight = NewValue;
-	}
-}
-
-UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot)
-{
-	for (int32 i = 0; i < CharacterCreation.SlotValues.Num(); i++)
-	{
-		if (CharacterCreation.SlotValues[i].Slot == OutfitSlot)
-		{
-			return CharacterCreation.SlotValues[i].Value;
-		}
-	}
-	return nullptr;
-}
-
-void UCharacterCreator::SetOutfit(UCharacterCreatorOutfit* CCOutfit)
-{
-	if (CCOutfit)
-	{
-		for (int32 i = 0; i < CharacterCreation.SlotValues.Num(); i++)
-		{
-			if (CharacterCreation.SlotValues[i].Slot == CCOutfit->Slot)
-			{
-				CharacterCreation.SlotValues[i].Value = CCOutfit;
-			}
-		}
-	}
-}
-
+//
+//float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
+//{
+//	if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
+//	{
+//		return MorphData->MorphWeight;
+//	}
+//	return 0.f;
+//}
+//
+//void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
+//{
+//	if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
+//	{
+//		MorphData->MorphWeight = NewValue;
+//	}
+//}
 //
 //int32 UCharacterCreator::GetSelectedOutfitIndex(UCharacterCreatorOutfitsSet* CCOutfitSet)
 //{

@@ -9,6 +9,7 @@
 
 class UDataTable;
 class USkeletalMesh;
+class UCharacterCreatorOutfitsSet;
 
 DECLARE_LOG_CATEGORY_EXTERN(CharacterCreationLog, Warning, All);
 
@@ -38,6 +39,16 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = DataTable, meta = (AllowPrivateAccess = "true"))
 	UDataTable* BottomBodyMeshes;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = DataTable, meta = (AllowPrivateAccess = "true"))
+	UCharacterCreatorOutfitsSet* HeadOutfits;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = DataTable, meta = (AllowPrivateAccess = "true"))
+	UCharacterCreatorOutfitsSet* UpperBodyOutfits;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = DataTable, meta = (AllowPrivateAccess = "true"))
+	UCharacterCreatorOutfitsSet* BottomBodyOutfits;
 
 public:
 

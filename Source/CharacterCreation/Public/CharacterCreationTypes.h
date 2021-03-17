@@ -11,6 +11,22 @@
 
 class USkeletalMeshComponent;
 class USkeletalMesh;
+class UCharacterCreatorOutfitSlot;
+class UCharacterCreatorOutfit;
+
+
+USTRUCT(BlueprintType)
+struct CHARACTERCREATION_API FCCSlotValue 
+{
+	GENERATED_BODY()
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	UCharacterCreatorOutfitSlot* Slot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	UCharacterCreatorOutfit* Value;
+};
 
 
 /** Struct representing a slot for an item, shown in the UI */
@@ -27,6 +43,9 @@ struct CHARACTERCREATION_API FCharacterCreation : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
 	int32 BottomBodyId;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	TArray<FCCSlotValue> SlotValues;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
 	TMap<FName, FMorphPresetData> MorphPresetData;
@@ -107,9 +126,9 @@ struct CHARACTERCREATION_API FCharacterCreation : public FTableRowBase
 		BottomBodyId = 0;
 
 		MorphPresetData.Reserve(23);
-		MorphPresetData.Add("CC_Bodybuilder",FMorphPresetData("CC_Bodybuilder", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		MorphPresetData.Add("CC_Bodybuilder", FMorphPresetData("CC_Bodybuilder", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
 		MorphPresetData.Add("CC_BodyTone", FMorphPresetData("CC_BodyTone", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Heavy" ,FMorphPresetData("CC_Heavy", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		MorphPresetData.Add("CC_Heavy", FMorphPresetData("CC_Heavy", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
 		MorphPresetData.Add("CC_Old", FMorphPresetData("CC_Old", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
 		MorphPresetData.Add("CC_Thin", FMorphPresetData("CC_Thin", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
 		MorphPresetData.Add("CC_Head_FaceAngle", FMorphPresetData("CC_Head_FaceAngle", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
@@ -132,6 +151,17 @@ struct CHARACTERCREATION_API FCharacterCreation : public FTableRowBase
 		MorphPresetData.Add("CC_Head_Young", FMorphPresetData("CC_Head_Young", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
 	}
 
+	UCharacterCreatorOutfit* GetOutfitForSlot(UCharacterCreatorOutfitSlot* Slot)
+	{
+		for (FCCSlotValue& SlotValue : SlotValues)
+		{
+			if (SlotValue.Slot == Slot)
+			{
+				return SlotValue.Value;
+			}
+		}
+		return nullptr;
+	}
 };
 
 USTRUCT(BlueprintType)

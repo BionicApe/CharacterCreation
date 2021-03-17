@@ -34,6 +34,11 @@
       "Name": "CharacterCreationEditor",
       "Type": "Editor",
       "LoadingPhase": "Default"
+    },
+    {
+      "Name": "CharacterCreationUI",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
     }
   ]
 }

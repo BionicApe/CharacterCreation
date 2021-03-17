@@ -5,6 +5,12 @@
 #include "Modules/ModuleManager.h"
 #include "AssetToolsModule.h"
 #include "CharacterCreatorTypeActions.h"
+#include "CharacterCreatorAttributeTypeActions.h"
+#include "CharacterCreatorAttributesSetTypeActions.h"
+#include "CharacterCreatorOutfitsSetTypeActions.h"
+#include "CharacterCreatorOutfitTypeActions.h"
+#include <CharacterCreatorOutfitSlotTypeActions.h>
+#include <CharacterCreatorModelTypeActions.h>
 
 #define LOCTEXT_NAMESPACE "FCharacterCreationEditorModule"
 
@@ -14,8 +20,15 @@ void FCharacterCreationEditorModule::StartupModule()
 
 	// Assets Category
 	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
+	
 	EAssetTypeCategories::Type AssetCategoryBit = AssetTools.RegisterAdvancedAssetCategory(FName(TEXT("CharacterCreationEditor")), LOCTEXT("CharacterCreationEditor", "Character Creation"));
 	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorAttributeTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorAttributesSetTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorOutfitTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorOutfitsSetTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorOutfitSlotTypeActions(AssetCategoryBit)));
+	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorModelTypeActions(AssetCategoryBit)));
 }
 
 void FCharacterCreationEditorModule::ShutdownModule()

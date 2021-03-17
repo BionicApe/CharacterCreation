@@ -8,6 +8,10 @@
 #include "Engine/SkeletalMesh.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "UObject/ConstructorHelpers.h"
+#include <CharacterCreatorOutfitsSet.h>
+#include <CharacterCreatorOutfit.h>
+#include <CharacterCreationTypes.h>
+#include <CharacterCreatorOutfitSlot.h>
 
 static const FString ContextString(TEXT("Character Creation"));
 DEFINE_LOG_CATEGORY(CharacterCreationLog);
@@ -18,14 +22,23 @@ UCharacterCreationSubsystem::UCharacterCreationSubsystem() : Super()
 	//static ConstructorHelpers::FObjectFinder<UDataTable> CharacterCreationsDT(TEXT("DataTable'/Game/ThePrison/Data/DT_CharacterCreations.DT_CharacterCreations'"));
 	//CharacterCreations = CharacterCreationsDT.Object;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> HeadMeshesDT(TEXT("DataTable'/Game/CharacterCreation/DT_CCHeadMeshes.DT_CCHeadMeshes'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> HeadMeshesDT(TEXT("DataTable'/Game/ThePrisonCC/CharacterCreation/DT_CCHeadMeshes.DT_CCHeadMeshes'"));
 	HeadMeshes = HeadMeshesDT.Object;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> UpperBodyMeshesDT(TEXT("DataTable'/Game/CharacterCreation/DT_CCUpperBodyMeshes.DT_CCUpperBodyMeshes'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> UpperBodyMeshesDT(TEXT("DataTable'/Game/ThePrisonCC/CharacterCreation/DT_CCUpperBodyMeshes.DT_CCUpperBodyMeshes'"));
 	UpperBodyMeshes = UpperBodyMeshesDT.Object;
 
-	static ConstructorHelpers::FObjectFinder<UDataTable> BottomBodyMeshesDT(TEXT("DataTable'/Game/CharacterCreation/DT_CCBottomBodyMeshes.DT_CCBottomBodyMeshes'"));
+	static ConstructorHelpers::FObjectFinder<UDataTable> BottomBodyMeshesDT(TEXT("DataTable'/Game/ThePrisonCC/CharacterCreation/DT_CCBottomBodyMeshes.DT_CCBottomBodyMeshes'"));
 	BottomBodyMeshes = BottomBodyMeshesDT.Object;
+
+	static ConstructorHelpers::FObjectFinder<UCharacterCreatorOutfitsSet> BBOutfitRef(TEXT("CharacterCreatorOutfitsSet'/Game/ThePrisonCC/CharacterCreation/Outfits/OS_BottomBody.OS_BottomBody'"));
+	BottomBodyOutfits = BBOutfitRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UCharacterCreatorOutfitsSet> UBOutfitRef(TEXT("CharacterCreatorOutfitsSet'/Game/ThePrisonCC/CharacterCreation/Outfits/OS_UpperBody.OS_UpperBody'"));
+	UpperBodyOutfits = UBOutfitRef.Object;
+
+	static ConstructorHelpers::FObjectFinder<UCharacterCreatorOutfitsSet> HeadOutfitRef(TEXT("CharacterCreatorOutfitsSet'/Game/ThePrisonCC/CharacterCreation/Outfits/OS_HeadOutfits.OS_HeadOutfits'"));
+	HeadOutfits = HeadOutfitRef.Object;
 }
 
 USkeletalMesh* UCharacterCreationSubsystem::CreateSkeletalMesh(FCharacterCreation const& CharacterCreation)
@@ -58,31 +71,49 @@ USkeletalMesh* UCharacterCreationSubsystem::CreateSkeletalMesh(FCharacterCreatio
 
 USkeletalMesh* UCharacterCreationSubsystem::GetHeadMesh(int32 id)
 {
-	FCharacterCreationMesh* Row = HeadMeshes->FindRow<FCharacterCreationMesh>(FName(*FString::FromInt(id)), ContextString, true);
-	if (Row)
+	//FCharacterCreationMesh* Row = HeadMeshes->FindRow<FCharacterCreationMesh>(FName(*FString::FromInt(id)), ContextString, true);
+	//if (Row)
+	//{
+	//	return Row->Mesh;
+	//}
+
+	if (HeadOutfits && HeadOutfits->Outfits.IsValidIndex(id))
 	{
-		return Row->Mesh;
+		return HeadOutfits->Outfits[0]->Mesh;
 	}
+
 	return nullptr;
 }
 
 USkeletalMesh* UCharacterCreationSubsystem::GetBottomBodyMesh(int32 id)
 {
-	FCharacterCreationMesh* Row = BottomBodyMeshes->FindRow<FCharacterCreationMesh>(FName(*FString::FromInt(id)), ContextString, true);
-	if (Row)
+	//FCharacterCreationMesh* Row = BottomBodyMeshes->FindRow<FCharacterCreationMesh>(FName(*FString::FromInt(id)), ContextString, true);
+	//if (Row)
+	//{
+	//	return Row->Mesh;
+	//}
+
+	if (BottomBodyOutfits && BottomBodyOutfits->Outfits.IsValidIndex(id))
 	{
-		return Row->Mesh;
+		return BottomBodyOutfits->Outfits[0]->Mesh;
 	}
 	return nullptr;
 }
 
 USkeletalMesh* UCharacterCreationSubsystem::GetUpperBodyMesh(int32 id)
 {
-	FCharacterCreationMesh* Row = UpperBodyMeshes->FindRow<FCharacterCreationMesh>(FName(*FString::FromInt(id)), ContextString, true);
-	if (Row)
+	//FCharacterCreationMesh* Row = UpperBodyMeshes->FindRow<FCharacterCreationMesh>(FName(*FString::FromInt(id)), ContextString, true);
+	//if (Row)
+	//{
+	//	return Row->Mesh;
+	//}
+
+
+	if (UpperBodyOutfits && UpperBodyOutfits->Outfits.IsValidIndex(id))
 	{
-		return Row->Mesh;
+		return UpperBodyOutfits->Outfits[0]->Mesh;
 	}
+
 	return nullptr;
 }
 
@@ -112,9 +143,31 @@ void UCharacterCreationSubsystem::ApplyFromFromCharacterCreation(FCharacterCreat
 {
 	if (Head && BottomBody && UpperBody)
 	{
-		Head->SetSkeletalMesh(GetHeadMesh(CharacterCreation.HeadId));
-		BottomBody->SetSkeletalMesh(GetBottomBodyMesh(CharacterCreation.BottomBodyId));
-		UpperBody->SetSkeletalMesh(GetUpperBodyMesh(CharacterCreation.UpperBodyId));
+		//Head->SetSkeletalMesh(GetHeadMesh(CharacterCreation.HeadId));
+		//BottomBody->SetSkeletalMesh(GetBottomBodyMesh(CharacterCreation.BottomBodyId));
+		//UpperBody->SetSkeletalMesh(GetUpperBodyMesh(CharacterCreation.UpperBodyId));
+
+		//Head->SetSkeletalMesh(GetHeadMesh(CharacterCreation.HeadId));
+		//BottomBody->SetSkeletalMesh(GetBottomBodyMesh(CharacterCreation.BottomBodyId));
+		//UpperBody->SetSkeletalMesh(GetUpperBodyMesh(CharacterCreation.UpperBodyId));
+
+
+		for (int32 i = 0; i < CharacterCreation.SlotValues.Num(); i++)
+		{
+			if (CharacterCreation.SlotValues[i].Slot->Name.Contains(TEXT("Head")))
+			{
+				Head->SetSkeletalMesh(CharacterCreation.SlotValues[i].Value->Mesh);
+			}
+			else if (CharacterCreation.SlotValues[i].Slot->Name.Contains(TEXT("Upper")))
+			{
+				UpperBody->SetSkeletalMesh(CharacterCreation.SlotValues[i].Value->Mesh);
+			}
+			else if (CharacterCreation.SlotValues[i].Slot->Name.Contains(TEXT("Bottom")))
+			{
+				BottomBody->SetSkeletalMesh(CharacterCreation.SlotValues[i].Value->Mesh);
+			}
+		}
+
 
 		for (const TPair<FName, FMorphPresetData>& PresetData : CharacterCreation.MorphPresetData)
 		{

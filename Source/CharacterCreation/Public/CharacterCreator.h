@@ -7,6 +7,11 @@
 #include "CharacterCreationTypes.h"
 #include "CharacterCreator.generated.h"
 
+class UCharacterCreatorAttributesSet;
+class UCharacterCreatorAttribute;
+class UCharacterCreatorOutfit;
+class UCharacterCreatorOutfitSlot;
+
 /**
  *
  */
@@ -19,4 +24,14 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	FCharacterCreation CharacterCreation;
+		
+public:
+	
+	float ValueOf(UCharacterCreatorAttribute* CCAttribute);
+
+	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
+
+	UCharacterCreatorOutfit* GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot);
+
+	void SetOutfit(UCharacterCreatorOutfit* CCOutfit);
 };
