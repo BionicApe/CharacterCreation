@@ -47,8 +47,8 @@ struct CHARACTERCREATION_API FCharacterCreation : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
 	TArray<FCCSlotValue> SlotValues;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
-	TMap<FName, FMorphPresetData> MorphPresetData;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	//TMap<FName, FMorphPresetData> MorphPresetData;
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
 	//FMorphPresetData Bodybuilder = FMorphPresetData("CC_Bodybuilder", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f);
@@ -125,30 +125,30 @@ struct CHARACTERCREATION_API FCharacterCreation : public FTableRowBase
 		UpperBodyId = 0;
 		BottomBodyId = 0;
 
-		MorphPresetData.Reserve(23);
-		MorphPresetData.Add("CC_Bodybuilder", FMorphPresetData("CC_Bodybuilder", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_BodyTone", FMorphPresetData("CC_BodyTone", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Heavy", FMorphPresetData("CC_Heavy", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Old", FMorphPresetData("CC_Old", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Thin", FMorphPresetData("CC_Thin", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_FaceAngle", FMorphPresetData("CC_Head_FaceAngle", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_CheekBonesSize", FMorphPresetData("CC_Head_CheekBonesSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_FaceDepth", FMorphPresetData("CC_Head_FaceDepth", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_EarLobeSize", FMorphPresetData("CC_Head_EarLobeSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_EarSize", FMorphPresetData("CC_Head_EarSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_EyeSize", FMorphPresetData("CC_Head_EyeSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Heart", FMorphPresetData("CC_Head_Heart", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Heavy", FMorphPresetData("CC_Head_Heavy", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_JawSize", FMorphPresetData("CC_Head_JawSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_LipSize", FMorphPresetData("CC_Head_LipSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_MouthSize", FMorphPresetData("CC_Head_MouthSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Narrow", FMorphPresetData("CC_Head_Narrow", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_NoseSize", FMorphPresetData("CC_Head_NoseSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Old", FMorphPresetData("CC_Head_Old", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Round", FMorphPresetData("CC_Head_Round", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Square", FMorphPresetData("CC_Head_Square", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Thin", FMorphPresetData("CC_Head_Thin", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
-		MorphPresetData.Add("CC_Head_Young", FMorphPresetData("CC_Head_Young", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Reserve(23);
+		//MorphPresetData.Add("CC_Bodybuilder", FMorphPresetData("CC_Bodybuilder", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_BodyTone", FMorphPresetData("CC_BodyTone", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Heavy", FMorphPresetData("CC_Heavy", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Old", FMorphPresetData("CC_Old", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Thin", FMorphPresetData("CC_Thin", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_FaceAngle", FMorphPresetData("CC_Head_FaceAngle", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_CheekBonesSize", FMorphPresetData("CC_Head_CheekBonesSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_FaceDepth", FMorphPresetData("CC_Head_FaceDepth", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_EarLobeSize", FMorphPresetData("CC_Head_EarLobeSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_EarSize", FMorphPresetData("CC_Head_EarSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_EyeSize", FMorphPresetData("CC_Head_EyeSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Heart", FMorphPresetData("CC_Head_Heart", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Heavy", FMorphPresetData("CC_Head_Heavy", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_JawSize", FMorphPresetData("CC_Head_JawSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_LipSize", FMorphPresetData("CC_Head_LipSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_MouthSize", FMorphPresetData("CC_Head_MouthSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Narrow", FMorphPresetData("CC_Head_Narrow", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_NoseSize", FMorphPresetData("CC_Head_NoseSize", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Old", FMorphPresetData("CC_Head_Old", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Round", FMorphPresetData("CC_Head_Round", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Square", FMorphPresetData("CC_Head_Square", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Thin", FMorphPresetData("CC_Head_Thin", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
+		//MorphPresetData.Add("CC_Head_Young", FMorphPresetData("CC_Head_Young", 0.f, /*InbBlacklist*/false, /*InbBake*/true, /*InRandMin*/0.f, /*InRandMax*/1.f));
 	}
 
 	UCharacterCreatorOutfit* GetOutfitForSlot(UCharacterCreatorOutfitSlot* Slot)

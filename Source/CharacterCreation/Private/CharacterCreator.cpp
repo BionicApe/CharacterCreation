@@ -12,19 +12,19 @@
 
 float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
 {
-	if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
-	{
-		return MorphData->MorphWeight;
-	}
+	//if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
+	//{
+	//	return MorphData->MorphWeight;
+	//}
 	return 0.f;
 }
 
 void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
 {
-	if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
-	{
-		MorphData->MorphWeight = NewValue;
-	}
+	//if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
+	//{
+	//	MorphData->MorphWeight = NewValue;
+	//}
 }
 
 UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot)

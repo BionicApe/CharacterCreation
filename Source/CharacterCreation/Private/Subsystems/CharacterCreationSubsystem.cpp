@@ -169,12 +169,12 @@ void UCharacterCreationSubsystem::ApplyFromFromCharacterCreation(FCharacterCreat
 		}
 
 
-		for (const TPair<FName, FMorphPresetData>& PresetData : CharacterCreation.MorphPresetData)
-		{
-			Head->SetMorphTarget(PresetData.Value.MorphName, PresetData.Value.MorphWeight, true);
-			BottomBody->SetMorphTarget(PresetData.Value.MorphName, PresetData.Value.MorphWeight, true);
-			UpperBody->SetMorphTarget(PresetData.Value.MorphName, PresetData.Value.MorphWeight, true);
-		}
+		//for (const TPair<FName, FMorphPresetData>& PresetData : CharacterCreation.MorphPresetData)
+		//{
+		//	Head->SetMorphTarget(PresetData.Value.MorphName, PresetData.Value.MorphWeight, true);
+		//	BottomBody->SetMorphTarget(PresetData.Value.MorphName, PresetData.Value.MorphWeight, true);
+		//	UpperBody->SetMorphTarget(PresetData.Value.MorphName, PresetData.Value.MorphWeight, true);
+		//}
 	}
 	else
 	{
