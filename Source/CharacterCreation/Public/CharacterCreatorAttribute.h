@@ -28,4 +28,7 @@ public:
 
 	UPROPERTY(EditInstanceOnly)
 	float MorphMax = 1.f;
+
+	UPROPERTY(EditInstanceOnly)
+	int32 DatabaseColumnIndex;
 };

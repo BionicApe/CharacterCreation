@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "CharacterCreationTypes.h"
+#include "Interfaces/CharacterCreationDAO.h"
 #include "CharacterCreatorComponent.generated.h"
 
 class UCharacterCreator;
@@ -15,10 +16,28 @@ UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), Blueprintabl
 class CHARACTERCREATION_API UCharacterCreatorComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+protected:
+
+	UPROPERTY(ReplicatedUsing="OnRep_CharacterCreator", EditAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
+	UCharacterCreator* CharacterCreator;
+
+	/**
+	 * It's used for clients so it's not overriden by Server
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
+	UCharacterCreator* CharacterCreatorLastUsed;
+
+	UPROPERTY(Transient)
+	TMap<UCharacterCreatorOutfitSlot*,USkeletalMeshComponent*> SlotMeshMap;
+
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
-	UCharacterCreator* CharacterCreator;
+	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
+	USkeletalMeshComponent* RootSkeletalMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterCreator")
+	int32 DatabaseId;
 
 	/**
 	 * In case this character has a mesh that is not a character creator
@@ -29,41 +48,53 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterCreator")
 	bool bLoadFromMain;
 
-	UPROPERTY(ReplicatedUsing = "OnRep_CharacterCreation", EditAnywhere, BlueprintReadWrite, Category = "CharacterCreator")
-	FCharacterCreation CharacterCreation;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterCreator")
 	FCharacterCreationBodyParts BodyPartsComponents;
+
+	UPROPERTY(BlueprintAssignable, Category = "CharacterCreator")
+	FAsyncSaveCharacterCreatorDelegate OnSaveToDBDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "CharacterCreator")
+	FAsyncLoadCharacterCreatorDelegate OnLoadToDBDelegate;
 
 public:
 
 	UCharacterCreatorComponent();
 
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UCharacterCreator* GetCharacterCreator() const { return CharacterCreator; }
 
-	#if WITH_EDITOR
-	void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
-	#endif // WITH_EDITOR
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 protected:
 
 	virtual void BeginPlay() override;
 
-private:
-
-	UFUNCTION()
-	void OnRep_CharacterCreation();
-
 public:
 
-	void ApplyNewCharacterCreator(FCharacterCreation const& NewCharacterCreation);
-
-	void SetupBodyParts(USkeletalMeshComponent* Head, USkeletalMeshComponent* Bottom, USkeletalMeshComponent* Upper);
-
-	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
-	void LoadCharacterCreator(UCharacterCreator* NewCharacterCreator = nullptr);
+	UFUNCTION()
+	void OnRep_CharacterCreator();
 	
 	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
 	void SetCharacterCreator(UCharacterCreator* NewCharacterCreator);
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
+	bool LoadCharacterCreatorFromDatabase();
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
+	bool SaveCharacterCreatorToDatabase();
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
+	void OnSaveDaoResponse(FAsyncCharacterCreatorResponse Response);
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
+	void OnLoadDaoResponse(FAsyncCharacterCreatorResponse Response);
+	
+	UFUNCTION()
+	void OnChangedReceived();
+	
+	UFUNCTION()
+	void ReloadCurrentCharacterCreator();
 
 };

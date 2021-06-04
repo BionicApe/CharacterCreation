@@ -22,4 +22,10 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	FName FriendlyName;
+
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	int32 DatabaseColumnIndex;
+	
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	bool bIsRoot = false;
 };

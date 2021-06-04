@@ -11,22 +11,31 @@
 #include "Widgets/CCAttributesSetTabWidget.h"
 #include "Components/WidgetSwitcher.h"
 #include "Widgets/CCAttributesSetTabContentWidget.h"
-#include <Widgets/CCOutfitWidget.h>
-#include <CharacterCreatorOutfitsSet.h>
-#include <CharacterCreatorModel.h>
+#include "Widgets/CCOutfitWidget.h"
+#include "CharacterCreatorOutfitsSet.h"
+#include "CharacterCreatorModel.h"
+#include "Components/CharacterCreatorComponent.h"
 
 
 bool UCharacterCreatorWidget::Initialize()
 {
 	if (Super::Initialize())
 	{
+		if (APawn* Pawn = GetOwningPlayerPawn())
+		{
+			if (UCharacterCreatorComponent* CCComp = Cast<UCharacterCreatorComponent>(Pawn->GetComponentByClass(UCharacterCreatorComponent::StaticClass())))
+			{
+				CharacterCreator = CCComp ->GetCharacterCreator();
+			}
+		}
+
 		ReloadFromCharacterCreator();
 		return true;
 	}
 	return false;
 }
 
-void UCharacterCreatorWidget::SetCharacterCreator(UCharacterCreator* NewCharacterCreator)
+void UCharacterCreatorWidget::SetNewCharacterCreator(UCharacterCreator* NewCharacterCreator)
 {
 	CharacterCreator = NewCharacterCreator;
 	ReloadFromCharacterCreator();
@@ -34,6 +43,9 @@ void UCharacterCreatorWidget::SetCharacterCreator(UCharacterCreator* NewCharacte
 
 void UCharacterCreatorWidget::ReloadFromCharacterCreator()
 {
+	AttributesSetSwitcher->ClearChildren();
+	AttributesTabs->ClearChildren();
+
 	if (CharacterCreatorModel && CharacterCreator && TabContentWidgetClass && TabButtonsWidgetClass && OutfitWidgetClass)
 	{
 		for (UCharacterCreatorAttributesSet* AttributesSet : CharacterCreatorModel->AttributesSets)
@@ -78,7 +90,6 @@ void UCharacterCreatorWidget::ReloadFromCharacterCreator()
 
 void UCharacterCreatorWidget::OnTabSelected(UCCAttributesSetTabWidget* SelectedTabWidget, UWidget* SelectedContentWidget)
 {
-
 	AttributesSetSwitcher->SetActiveWidget(SelectedContentWidget);
 
 	TArray<UWidget*> ChildrenWidgets = AttributesTabs->GetAllChildren();

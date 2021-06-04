@@ -20,7 +20,7 @@ void ACharacterCreationHUD::CreateCCWidget(UCharacterCreator* CharacterCreator)
 	if (CCWidgetClass)
 	{
 		CCWidget = CreateWidget<UCharacterCreatorWidget>(GetOwningPlayerController(), CCWidgetClass);
-		CCWidget->SetCharacterCreator(CharacterCreator);
+		CCWidget->SetNewCharacterCreator(CharacterCreator);
 		CCWidget->AddToViewport();
 	}
 }

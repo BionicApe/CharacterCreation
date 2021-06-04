@@ -5,110 +5,86 @@
 #include "CharacterCreationTypes.h"
 #include "CharacterCreatorAttribute.h"
 #include "CharacterCreatorOutfitsSet.h"
-#include <CharacterCreatorAttributesSet.h>
-#include <CharacterCreatorOutfit.h>
-#include <CharacterCreatorOutfitSlot.h>
+#include "CharacterCreatorAttributesSet.h"
+#include "CharacterCreatorOutfit.h"
+#include "CharacterCreatorOutfitSlot.h"
+#include "Engine/ActorChannel.h"
+#include "Net/UnrealNetwork.h"
 
 
 float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
 {
-	//if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
-	//{
-	//	return MorphData->MorphWeight;
-	//}
+	for (FCCAttributeValue AttributeValue : AttributeValues)
+	{
+		if (AttributeValue.Attribute == CCAttribute)
+		{
+			return AttributeValue.Value;
+		}
+	}
 	return 0.f;
 }
 
 void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
 {
-	//if (FMorphPresetData* MorphData = CharacterCreation.MorphPresetData.Find(CCAttribute->MorphName))
-	//{
-	//	MorphData->MorphWeight = NewValue;
-	//}
+	ServerSetAttributeValue(CCAttribute, NewValue);
 }
 
-UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot)
+void UCharacterCreator::ServerSetAttributeValue_Implementation(UCharacterCreatorAttribute* Attribute, float NewValue)
 {
-	for (int32 i = 0; i < CharacterCreation.SlotValues.Num(); i++)
+	for (FCCAttributeValue& AttributeValue : AttributeValues)
 	{
-		if (CharacterCreation.SlotValues[i].Slot == OutfitSlot)
+		if (AttributeValue.Attribute == Attribute)
 		{
-			return CharacterCreation.SlotValues[i].Value;
+			AttributeValue.Value = NewValue;
+			break;
+		}
+	}
+	AttributeValues.Emplace(Attribute, NewValue);//We create a new entry otherwise
+	MulticastOnChanged();
+}
+
+void UCharacterCreator::MulticastOnChanged_Implementation()
+{
+	OnChanged.Broadcast();
+}
+
+UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitSlot* Slot)
+{
+	for (FCCSlotAndOutfit& SlotAndOutfit : SlotAndOutfitArray)
+	{
+		if (SlotAndOutfit.Slot == Slot)
+		{
+			return SlotAndOutfit.Outfit;
 		}
 	}
 	return nullptr;
 }
 
-void UCharacterCreator::SetOutfit(UCharacterCreatorOutfit* CCOutfit)
+void UCharacterCreator::SetOutfit(UCharacterCreatorOutfit* Outfit)
 {
-	if (CCOutfit)
+	ServerSetOutfit_Implementation(Outfit);
+}
+
+void UCharacterCreator::ServerSetOutfit_Implementation(UCharacterCreatorOutfit* Outfit)
+{
+	if (Outfit && Outfit->Slot)
 	{
-		for (int32 i = 0; i < CharacterCreation.SlotValues.Num(); i++)
+		for (FCCSlotAndOutfit& SlotAndOutfit : SlotAndOutfitArray)
 		{
-			if (CharacterCreation.SlotValues[i].Slot == CCOutfit->Slot)
+			if (SlotAndOutfit.Slot == Outfit->Slot)
 			{
-				CharacterCreation.SlotValues[i].Value = CCOutfit;
+				SlotAndOutfit.Outfit = Outfit;
+				break;
 			}
 		}
 	}
+	MulticastOnChanged();
 }
 
-//
-//int32 UCharacterCreator::GetSelectedOutfitIndex(UCharacterCreatorOutfitsSet* CCOutfitSet)
-//{
-//	if (CCOutfitSet)
-//	{
-//
-//		if (CCOutfitSet->OutfitsSetName == "Head")
-//		{
-//			return CharacterCreation.HeadId;
-//		}
-//		else if (CCOutfitSet->OutfitsSetName == "UpperBody")
-//		{
-//			return CharacterCreation.UpperBodyId;
-//		}
-//		else if (CCOutfitSet->OutfitsSetName == "BottomBody")
-//		{
-//			return CharacterCreation.BottomBodyId;
-//		}
-//	}
-//	return -1;
-//}
-//
-//UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitsSet* CCOutfitSet)
-//{
-//	if (CCOutfitSet)
-//	{
-//		for (UCharacterCreatorOutfitsSet* OutfitSetToCheck : OutfitSets)
-//		{
-//			if (OutfitSetToCheck->OutfitsSetName == CCOutfitSet->OutfitsSetName)
-//			{
-//				int32 Index = GetSelectedOutfitIndex(CCOutfitSet);
-//				if (OutfitSetToCheck->Outfits.IsValidIndex(Index))
-//				{
-//					return OutfitSetToCheck->Outfits[Index];
-//				}
-//			}
-//		}
-//	}
-//	return nullptr;
-//}
-//
-//void UCharacterCreator::SetOutfit(UCharacterCreatorOutfitsSet* CCOutfitSet, int32 Index)
-//{
-//	if (CCOutfitSet)
-//	{
-//		if (CCOutfitSet->OutfitsSetName == "Head")
-//		{
-//			CharacterCreation.HeadId = (Index % CCOutfitSet->Outfits.Num());
-//		}
-//		else if (CCOutfitSet->OutfitsSetName == "UpperBody")
-//		{
-//			CharacterCreation.UpperBodyId = (Index % CCOutfitSet->Outfits.Num());
-//		}
-//		else if (CCOutfitSet->OutfitsSetName == "BottomBody")
-//		{
-//			CharacterCreation.BottomBodyId = (Index % CCOutfitSet->Outfits.Num());
-//		}
-//	}
-//}
+void UCharacterCreator::GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UCharacterCreator, SlotAndOutfitArray);
+	DOREPLIFETIME(UCharacterCreator, AttributeValues);
+	DOREPLIFETIME(UCharacterCreator, OnChanged);
+}

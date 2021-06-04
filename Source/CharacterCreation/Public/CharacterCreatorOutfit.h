@@ -32,4 +32,7 @@ public:
 
 	UPROPERTY(EditInstanceOnly)
 	USkeletalMesh* Mesh;
+
+	UPROPERTY(EditInstanceOnly)
+	int32 DatabaseId;
 };

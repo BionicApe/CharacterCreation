@@ -50,7 +50,8 @@ public:
 	
 	virtual bool Initialize() override;
 	
-	void SetCharacterCreator(UCharacterCreator* CharacterCreator);
+	UFUNCTION(BlueprintCallable)
+	void SetNewCharacterCreator(UCharacterCreator* NewCharacterCreator);
 	
 	void ReloadFromCharacterCreator();
 	

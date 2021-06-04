@@ -14,16 +14,16 @@ struct FCharacterCreationBodyParts;
 UINTERFACE(Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatable : public UInterface
 {
-	GENERATED_UINTERFACE_BODY()
+	GENERATED_BODY()
 };
 
 class ICharacterCreatable
 {
-	GENERATED_IINTERFACE_BODY()
+	GENERATED_BODY()
 
 public:
 
-	virtual FCharacterCreation* GetCharacterCreation();
+	virtual FCharacterCreation* GetCharacterCreation() = 0;
 
-	virtual FCharacterCreationBodyParts* GetBodyParts();
+	virtual FCharacterCreationBodyParts* GetBodyParts() = 0;
 };

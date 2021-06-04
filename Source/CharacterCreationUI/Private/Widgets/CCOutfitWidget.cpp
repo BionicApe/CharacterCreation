@@ -39,7 +39,7 @@ void UCCOutfitWidget::SetOutfits(TMap<UCharacterCreatorOutfitSlot*, UCharacterCr
 			DataHolder->CharacterCreator = CharacterCreator;
 			DataHolder->OutfitsSet = pair.Value;
 			DataHolder->OutfitSlot = pair.Key;
-			DataHolder->SelectedOutfit = CharacterCreator->CharacterCreation.GetOutfitForSlot(pair.Key);
+			DataHolder->SelectedOutfit = CharacterCreator->GetSelectedOutfit(pair.Key);
 			DataHolderArray.Add(DataHolder);
 		}
 
