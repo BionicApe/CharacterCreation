@@ -13,6 +13,8 @@ class UCharacterCreatorOutfit;
 class UCharacterCreatorOutfitSlot;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterCreatorChanged);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterCreatorOutfitChanged, UCharacterCreatorOutfit*, Outfit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCharacterCreatorAttributeChanged, UCharacterCreatorAttribute*, Attribute, float, Value);
 
 /**
  *
@@ -33,27 +35,32 @@ public:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
 	TArray<FCCAttributeValue> AttributeValues;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	FOnCharacterCreatorChanged OnChanged;
+
+	UPROPERTY(Transient)
+	FOnCharacterCreatorOutfitChanged OnOutfitChangedDelegate;
+
+	UPROPERTY(Transient)
+	FOnCharacterCreatorAttributeChanged OnAttributeChangedDelegate;
 		
 public:
 	
-
-	float ValueOf(UCharacterCreatorAttribute* CCAttribute);
-	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
-	UFUNCTION(Server, Reliable)
-	void ServerSetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
-
-	UCharacterCreatorOutfit* GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot);
-	void SetOutfit(UCharacterCreatorOutfit* Outfit);
-	UFUNCTION(Server, Reliable)
-	void ServerSetOutfit(UCharacterCreatorOutfit* Outfit);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastOnChanged();
-
 	virtual bool IsSupportedForNetworking() const override { return true; }
 	//virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags); // note no override because this is the FIRST declaration of this function.
 	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const override;
 
+	float ValueOf(UCharacterCreatorAttribute* CCAttribute);
+
+	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
+
+	UCharacterCreatorOutfit* GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot);
+
+	void SetOutfit(UCharacterCreatorOutfit* Outfit);
+
+	//UFUNCTION()
+	//void OnRepSlotAndOutfitArray();
+	//
+	//UFUNCTION()
+	//void OnRepAttributeValues();
 };

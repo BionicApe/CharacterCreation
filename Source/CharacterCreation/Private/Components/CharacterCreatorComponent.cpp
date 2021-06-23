@@ -20,7 +20,6 @@ UCharacterCreatorComponent::UCharacterCreatorComponent()
 
 	//OnSaveToDBDelegate.AddUObject(this, &UCharacterCreatorComponent::OnSaveDaoResponse);
 	//OnLoadToDBDelegate.AddUObject(this, &UCharacterCreatorComponent::OnLoadDaoResponse);
-
 	OnSaveToDBDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnSaveDaoResponse);
 	OnLoadToDBDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnLoadDaoResponse);
 }
@@ -28,7 +27,10 @@ UCharacterCreatorComponent::UCharacterCreatorComponent()
 void UCharacterCreatorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	ReloadCurrentCharacterCreator();
+	if (GetOwner()->GetLocalRole() == ROLE_Authority)
+	{
+		ReloadCurrentCharacterCreator();
+	}
 }
 
 void UCharacterCreatorComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -53,6 +55,31 @@ void UCharacterCreatorComponent::SetCharacterCreator(UCharacterCreator* NewChara
 {
 	CharacterCreator = NewCharacterCreator;
 	ReloadCurrentCharacterCreator();
+}
+
+void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
+{
+	USkeletalMeshComponent* SkComp = SlotMeshMap.FindRef(Outfit->Slot);
+
+	if (!SkComp)
+	{
+		if (Outfit->Slot->bIsRoot)
+		{
+			SkComp = RootSkeletalMesh;
+		}
+		else
+		{
+			SkComp = NewObject<USkeletalMeshComponent>(GetOwner());
+			SkComp->SetIsReplicated(true);
+			SkComp->bUseAttachParentBound = true;
+			SkComp->SetWorldTransform(FTransform::Identity);
+			SkComp->AttachToComponent(RootSkeletalMesh, FAttachmentTransformRules::KeepRelativeTransform);
+			SkComp->SetMasterPoseComponent(RootSkeletalMesh);
+			SkComp->RegisterComponent();
+		}
+	}
+	SkComp->SetSkeletalMesh(Outfit->Mesh);
+	SlotMeshMap.Add(Outfit->Slot, SkComp);
 }
 
 bool UCharacterCreatorComponent::LoadCharacterCreatorFromDatabase()
@@ -105,144 +132,80 @@ void UCharacterCreatorComponent::OnLoadDaoResponse(FAsyncCharacterCreatorRespons
 void UCharacterCreatorComponent::OnChangedReceived()
 {
 
-	ReloadCurrentCharacterCreator();
+	//ReloadCurrentCharacterCreator();
 
-	if (GetOwner()->GetLocalRole() == ROLE_Authority)
-	{
-		SaveCharacterCreatorToDatabase();
-	}
+	//if (GetOwner()->GetLocalRole() == ROLE_Authority)
+	//{
+	//	SaveCharacterCreatorToDatabase();
+	//}
 }
 
 void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 {
-	bool bAreDifferent = CharacterCreator != CharacterCreatorLastUsed;
-
-	if (bAreDifferent)
+	if (GetOwner() && GetOwner()->GetLocalRole() == ROLE_Authority)
 	{
-		//Destroy Meshes and empty SlotMeshMap, they aren't valid anymore
-		for (auto SlotMes : SlotMeshMap)
+		bool bAreDifferent = CharacterCreator != CharacterCreatorLastUsed;
+
+		if (bAreDifferent)
 		{
-			if (SlotMes.Key->bIsRoot)
+			//Destroy Meshes and empty SlotMeshMap, they aren't valid anymore
+			for (auto SlotMes : SlotMeshMap)
 			{
-				SlotMes.Value->SetSkeletalMesh(nullptr);
-			}
-			else
-			{
-				SlotMes.Value->DestroyComponent(false);
-			}
-		}
-
-		SlotMeshMap.Empty();
-
-		if (CharacterCreatorLastUsed)
-		{
-			CharacterCreatorLastUsed->OnChanged.RemoveDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
-		}
-
-		if (CharacterCreator)
-		{
-			CharacterCreator->OnChanged.AddDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
-		}
-	}
-
-	CharacterCreatorLastUsed = CharacterCreator;//This is crucial to keep track of the generation
-
-	if (CharacterCreator)
-	{
-		//I assign all outfits regardless of they are different or not
-		for (const FCCSlotAndOutfit& SlotAndOutfit : CharacterCreator->SlotAndOutfitArray)
-		{
-			USkeletalMeshComponent* SkComp = SlotMeshMap.FindRef(SlotAndOutfit.Slot);
-
-			if (!SkComp)
-			{
-				if (SlotAndOutfit.Slot->bIsRoot)
+				if (SlotMes.Key->bIsRoot)
 				{
-					SkComp = RootSkeletalMesh;
+					SlotMes.Value->SetSkeletalMesh(nullptr);
 				}
 				else
 				{
-					SkComp = NewObject<USkeletalMeshComponent>(GetOwner());
-					SkComp->bUseAttachParentBound = true;
-					SkComp->SetWorldTransform(FTransform::Identity);
-					SkComp->AttachToComponent(RootSkeletalMesh, FAttachmentTransformRules::KeepRelativeTransform);
-					SkComp->SetMasterPoseComponent(RootSkeletalMesh);
-					SkComp->RegisterComponent();
+					SlotMes.Value->DestroyComponent(false);
 				}
 			}
-			SkComp->SetSkeletalMesh(SlotAndOutfit.Outfit->Mesh);
-			SlotMeshMap.Add(SlotAndOutfit.Slot, SkComp);
+
+			SlotMeshMap.Empty();
+
+			if (CharacterCreatorLastUsed)
+			{
+				CharacterCreatorLastUsed->OnChanged.RemoveDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
+				CharacterCreatorLastUsed->OnOutfitChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
+				CharacterCreatorLastUsed->OnAttributeChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+			}
+
+			if (CharacterCreator)
+			{
+				CharacterCreator->OnChanged.AddDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
+				CharacterCreator->OnOutfitChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
+				CharacterCreator->OnAttributeChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+			}
 		}
 
-		for (const FCCAttributeValue& AttributeValue : CharacterCreator->AttributeValues)
+		CharacterCreatorLastUsed = CharacterCreator;//This is crucial to keep track of the generation
+
+		if (CharacterCreator)
 		{
-			RootSkeletalMesh->SetMorphTarget(AttributeValue.Attribute->MorphName, AttributeValue.Value);
+			//I assign all outfits regardless of they are different or not
+			for (const FCCSlotAndOutfit& SlotAndOutfit : CharacterCreator->SlotAndOutfitArray)
+			{
+				SetOutfit(SlotAndOutfit.Outfit);
+			}
+
+			for (const FCCAttributeValue& AttributeValue : CharacterCreator->AttributeValues)
+			{
+				RootSkeletalMesh->SetMorphTarget(AttributeValue.Attribute->MorphName, AttributeValue.Value);
+			}
 		}
 	}
 }
 
-//void UCharacterCreatorComponent::ClearGenerartedMeshCompSlotOutfitArrayIfNeeded()
-//{
-//	if (MeshCompSlotOutfitArray.Num() > 0 && CharacterCreator != CharacterCreatorLastUsed)
-//	{
-//		for (const FCCMeshCompSlotOutfit& MeshCompSlotOutfit : MeshCompSlotOutfitArray)
-//		{
-//			if (MeshCompSlotOutfit.Slot->bIsRoot)
-//			{
-//				MeshCompSlotOutfit.SkComp->SetSkeletalMesh(nullptr);
-//			}
-//			else
-//			{
-//				MeshCompSlotOutfit.SkComp->DestroyComponent(false);
-//			}
-//		}
-//		MeshCompSlotOutfitArray.Empty();
-//	}
-//}
-//
-//void UCharacterCreatorComponent::GenerateMeshCompSlotOutfitArray()
-//{
-//	if (CharacterCreator != CharacterCreatorLastUsed && CharacterCreator)
-//	{
-//		for (const FCCSlotAndOutfit& SlotAndOutfit : CharacterCreator->SlotAndOutfitArray)
-//		{
-//			USkeletalMeshComponent* SkComp;
-//			if (SlotAndOutfit.Slot->bIsRoot)
-//			{
-//				SkComp = RootSkeletalMesh;
-//			}
-//			else
-//			{
-//				SkComp = NewObject<USkeletalMeshComponent>(GetOwner());
-//				SkComp->bUseAttachParentBound = true;
-//
-//				SkComp->SetWorldTransform(FTransform::Identity);
-//				SkComp->AttachToComponent(RootSkeletalMesh, FAttachmentTransformRules::KeepRelativeTransform);
-//				SkComp->SetMasterPoseComponent(RootSkeletalMesh);
-//				SkComp->RegisterComponent();
-//			}
-//			SkComp->SetSkeletalMesh(SlotAndOutfit.Outfit->Mesh);
-//			MeshCompSlotOutfitArray.Emplace(SkComp, SlotAndOutfit.Slot, SlotAndOutfit.Outfit);
-//		}
-//	}
-//}
-//
-//void UCharacterCreatorComponent::SetupCharacterCreatorUsedLast()
-//{
-//	bool bAreDifferent = CharacterCreator != CharacterCreatorLastUsed;
-//
-//	if (bAreDifferent)
-//	{
-//		if (CharacterCreatorLastUsed)
-//		{
-//			CharacterCreatorLastUsed->OnChanged.RemoveDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
-//			ClearGenerartedMeshCompSlotOutfitArrayIfNeeded();
-//		}
-//
-//		if (CharacterCreator)
-//		{
-//			CharacterCreator->OnChanged.AddDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
-//		}
-//		CharacterCreatorLastUsed = CharacterCreator;
-//	}
-//}
+void UCharacterCreatorComponent::OnOutfitChangedReceived(UCharacterCreatorOutfit* Outfit)
+{
+	SetOutfit(Outfit);
+}
+
+
+void UCharacterCreatorComponent::OnAttributeChangedReceived(UCharacterCreatorAttribute* Attribute, float Value)
+{
+	if (RootSkeletalMesh && Attribute)
+	{
+		RootSkeletalMesh->SetMorphTarget(Attribute->MorphName, Value);
+	}
+}

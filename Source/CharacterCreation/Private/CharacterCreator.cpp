@@ -12,6 +12,13 @@
 #include "Net/UnrealNetwork.h"
 
 
+void UCharacterCreator::GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(UCharacterCreator, SlotAndOutfitArray);
+	DOREPLIFETIME(UCharacterCreator, AttributeValues);
+}
+
 float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
 {
 	for (FCCAttributeValue AttributeValue : AttributeValues)
@@ -26,27 +33,24 @@ float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
 
 void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
 {
-	ServerSetAttributeValue(CCAttribute, NewValue);
-}
-
-void UCharacterCreator::ServerSetAttributeValue_Implementation(UCharacterCreatorAttribute* Attribute, float NewValue)
-{
+	bool bIsFound = false;
 	for (FCCAttributeValue& AttributeValue : AttributeValues)
 	{
-		if (AttributeValue.Attribute == Attribute)
+		if (AttributeValue.Attribute == CCAttribute)
 		{
 			AttributeValue.Value = NewValue;
+			bIsFound = true;
 			break;
 		}
 	}
-	AttributeValues.Emplace(Attribute, NewValue);//We create a new entry otherwise
-	MulticastOnChanged();
+	if (!bIsFound)
+	{
+		AttributeValues.Emplace(CCAttribute, NewValue);//We create a new entry otherwise
+	}
+	//OnChanged.Broadcast();
+	OnAttributeChangedDelegate.Broadcast(CCAttribute, NewValue);
 }
 
-void UCharacterCreator::MulticastOnChanged_Implementation()
-{
-	OnChanged.Broadcast();
-}
 
 UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitSlot* Slot)
 {
@@ -62,11 +66,7 @@ UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorO
 
 void UCharacterCreator::SetOutfit(UCharacterCreatorOutfit* Outfit)
 {
-	ServerSetOutfit_Implementation(Outfit);
-}
-
-void UCharacterCreator::ServerSetOutfit_Implementation(UCharacterCreatorOutfit* Outfit)
-{
+	bool bIsFound = false;
 	if (Outfit && Outfit->Slot)
 	{
 		for (FCCSlotAndOutfit& SlotAndOutfit : SlotAndOutfitArray)
@@ -74,17 +74,15 @@ void UCharacterCreator::ServerSetOutfit_Implementation(UCharacterCreatorOutfit* 
 			if (SlotAndOutfit.Slot == Outfit->Slot)
 			{
 				SlotAndOutfit.Outfit = Outfit;
+				bIsFound = true;
 				break;
 			}
 		}
 	}
-	MulticastOnChanged();
-}
-
-void UCharacterCreator::GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UCharacterCreator, SlotAndOutfitArray);
-	DOREPLIFETIME(UCharacterCreator, AttributeValues);
-	DOREPLIFETIME(UCharacterCreator, OnChanged);
+	if (!bIsFound)
+	{
+		SlotAndOutfitArray.Emplace(Outfit->Slot, Outfit);//We create a new entry otherwise
+	}
+	OnOutfitChangedDelegate.Broadcast(Outfit);
+	//OnChanged.Broadcast();
 }

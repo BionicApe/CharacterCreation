@@ -9,6 +9,7 @@
 #include "Components/Button.h"
 #include "CharacterCreator.h"
 #include <CharacterCreatorOutfitsSet.h>
+#include "Components/CharacterCreatorControlComponent.h"
 
 bool UCCOutfitListEntryWidget::Initialize()
 {
@@ -48,11 +49,17 @@ void UCCOutfitListEntryWidget::OnRightClicked()
 		return;
 	}
 
-	if (CCOutfitDH && CCOutfitDH->OutfitsSet && CCOutfitDH->CharacterCreator)
+	APlayerController* PC = GetOwningPlayer();
+
+	if (PC && CCOutfitDH && CCOutfitDH->OutfitsSet && CCOutfitDH->CharacterCreator)
 	{
 		CCOutfitDH->SelectedOutfit = CCOutfitDH->OutfitsSet->GetNextOutfit(CCOutfitDH->SelectedOutfit);
-		CCOutfitDH->CharacterCreator->SetOutfit(CCOutfitDH->SelectedOutfit);
 		UpdateOutfitText();
+
+		if (UCharacterCreatorControlComponent* CCControlComp = Cast<UCharacterCreatorControlComponent>(PC->GetComponentByClass(UCharacterCreatorControlComponent::StaticClass())))
+		{
+			CCControlComp->SetOutfit(CCOutfitDH->CharacterCreator, CCOutfitDH->SelectedOutfit);
+		}
 	}
 }
 

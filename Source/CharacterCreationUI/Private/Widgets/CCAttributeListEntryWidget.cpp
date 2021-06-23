@@ -8,6 +8,7 @@
 #include "Components/Slider.h"
 #include "DataHelper/CharacterCreatorAttributeDH.h"
 #include "CharacterCreator.h"
+#include "Components/CharacterCreatorControlComponent.h"
 
 bool UCCAttributeListEntryWidget::Initialize()
 {
@@ -42,11 +43,21 @@ void UCCAttributeListEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObj
 
 void UCCAttributeListEntryWidget::OnValueChanged(float NewValue)
 {
+	//TODO: Maybe move this around so it's no so server dependent
+
 	if (!CCAttributeDH)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UCCAttributeListEntryWidget::OnValueChanged() CCAttribute empty"));
 		return;
 	}
 
-	CCAttributeDH->CharacterCreator->SetAttributeValue(CCAttributeDH->CharacterCreatorAttribute, NewValue);
+	//CCAttributeDH->CharacterCreator->SetAttributeValue(CCAttributeDH->CharacterCreatorAttribute, NewValue);//
+
+	if (APlayerController* PC = GetOwningPlayer())
+	{
+		if (UCharacterCreatorControlComponent* CCControlComp = Cast<UCharacterCreatorControlComponent>(PC->GetComponentByClass(UCharacterCreatorControlComponent::StaticClass())))
+		{
+			CCControlComp->SetAttributeValue(CCAttributeDH->CharacterCreator, CCAttributeDH->CharacterCreatorAttribute, NewValue);
+		}
+	}
 }

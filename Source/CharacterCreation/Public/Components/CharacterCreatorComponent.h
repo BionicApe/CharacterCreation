@@ -19,7 +19,8 @@ class CHARACTERCREATION_API UCharacterCreatorComponent : public UActorComponent
 
 protected:
 
-	UPROPERTY(ReplicatedUsing="OnRep_CharacterCreator", EditAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
+	//UPROPERTY(ReplicatedUsing="OnRep_CharacterCreator", EditAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
+	UPROPERTY(ReplicatedUsing = "OnRep_CharacterCreator", EditAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
 	UCharacterCreator* CharacterCreator;
 
 	/**
@@ -57,6 +58,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "CharacterCreator")
 	FAsyncLoadCharacterCreatorDelegate OnLoadToDBDelegate;
 
+
 public:
 
 	UCharacterCreatorComponent();
@@ -80,6 +82,9 @@ public:
 	void SetCharacterCreator(UCharacterCreator* NewCharacterCreator);
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
+	void SetOutfit(UCharacterCreatorOutfit* NewOutfit);
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
 	bool LoadCharacterCreatorFromDatabase();
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
@@ -96,5 +101,10 @@ public:
 	
 	UFUNCTION()
 	void ReloadCurrentCharacterCreator();
-
+	
+	UFUNCTION()
+	void OnOutfitChangedReceived(UCharacterCreatorOutfit* Outfit);
+	
+	UFUNCTION()
+	void OnAttributeChangedReceived(UCharacterCreatorAttribute* Attribute, float Value);
 };
