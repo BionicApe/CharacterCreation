@@ -14,6 +14,7 @@ class UWidgetSwitcher;
 class UCCAttributesSetTabContentWidget;
 class UCCOutfitWidget;
 class UCharacterCreatorModel;
+class UButton;
 
 /**
  * 
@@ -36,6 +37,9 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* AttributesSetSwitcher;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* SaveButton;
 
 	UPROPERTY(EditDefaultsOnly, Category = Widgets)
 	TSubclassOf<UCCAttributesSetTabWidget> TabButtonsWidgetClass;
@@ -61,4 +65,7 @@ public:
 private:
 
 	void CreateTab(FText TabText, UCCAttributesSetTabWidget* SelectedTabWidget, UWidget* SelectedContentWidget);
+
+	UFUNCTION()
+	void OnSaveButtonClicked();
 };

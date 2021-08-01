@@ -27,40 +27,40 @@ bool UCCOutfitListEntryWidget::Initialize()
 
 void UCCOutfitListEntryWidget::OnLeftClicked()
 {
-	if (!CCOutfitDH)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UCCOutfitListEntryWidget::OnValueChanged() CCOutfit empty"));
-		return;
-	}
-
-	if (CCOutfitDH && CCOutfitDH->OutfitsSet && CCOutfitDH->CharacterCreator)
-	{
-		CCOutfitDH->SelectedOutfit = CCOutfitDH->OutfitsSet->GetPrevOutfit(CCOutfitDH->SelectedOutfit);
-		CCOutfitDH->CharacterCreator->SetOutfit(CCOutfitDH->SelectedOutfit);
-		UpdateOutfitText();
-	}
+	SetOutfit(true/*Left*/);
 }
 
 void UCCOutfitListEntryWidget::OnRightClicked()
 {
-	if (!CCOutfitDH)
+	SetOutfit(false/*Right*/);
+}
+
+
+void UCCOutfitListEntryWidget::SetOutfit(bool bDirectionIsLeft)
+{
+	if (!CCOutfitDH || !CCOutfitDH->OutfitsSet || !CCOutfitDH->CharacterCreator)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UCCOutfitListEntryWidget::OnValueChanged() CCOutfit empty"));
+		UE_LOG(LogTemp, Error, TEXT("UCCOutfitListEntryWidget::OnValueChanged() Bad values !CCOutfitDH || !CCOutfitDH->OutfitsSet || !CCOutfitDH->CharacterCreator"));
 		return;
 	}
 
 	APlayerController* PC = GetOwningPlayer();
-
-	if (PC && CCOutfitDH && CCOutfitDH->OutfitsSet && CCOutfitDH->CharacterCreator)
+	if (!PC)
 	{
-		CCOutfitDH->SelectedOutfit = CCOutfitDH->OutfitsSet->GetNextOutfit(CCOutfitDH->SelectedOutfit);
-		UpdateOutfitText();
-
-		if (UCharacterCreatorControlComponent* CCControlComp = Cast<UCharacterCreatorControlComponent>(PC->GetComponentByClass(UCharacterCreatorControlComponent::StaticClass())))
-		{
-			CCControlComp->SetOutfit(CCOutfitDH->CharacterCreator, CCOutfitDH->SelectedOutfit);
-		}
+		UE_LOG(LogTemp, Error, TEXT("UCCOutfitListEntryWidget::OnValueChanged() No Owning PlayerController Found"));
+		return;
 	}
+
+	UCharacterCreatorControlComponent* CCControlComp = Cast<UCharacterCreatorControlComponent>(PC->GetComponentByClass(UCharacterCreatorControlComponent::StaticClass()));
+	if (!CCControlComp)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCCOutfitListEntryWidget::OnValueChanged() No UCharacterCreatorControlComponent Found"));
+		return;
+	}
+
+	CCOutfitDH->SelectedOutfit = bDirectionIsLeft ? CCOutfitDH->OutfitsSet->GetPrevOutfit(CCOutfitDH->SelectedOutfit) : CCOutfitDH->OutfitsSet->GetNextOutfit(CCOutfitDH->SelectedOutfit);
+	CCControlComp->SetOutfit(CCOutfitDH->CharacterCreator, CCOutfitDH->SelectedOutfit);
+	UpdateOutfitText();
 }
 
 void UCCOutfitListEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject)

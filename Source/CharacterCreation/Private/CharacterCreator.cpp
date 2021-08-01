@@ -19,6 +19,51 @@ void UCharacterCreator::GetLifetimeReplicatedProps(TArray< class FLifetimeProper
 	DOREPLIFETIME(UCharacterCreator, AttributeValues);
 }
 
+int32 UCharacterCreator::GetFunctionCallspace(UFunction* Function, FFrame* Stack)
+{
+	if (HasAnyFlags(RF_ClassDefaultObject) || !IsSupportedForNetworking())
+	{
+		// This handles absorbing authority/cosmetic
+		return GEngine->GetGlobalFunctionCallspace(Function, this, Stack);
+	}
+	check(GetOuter() != nullptr);
+	return GetOuter()->GetFunctionCallspace(Function, Stack);
+}
+
+bool UCharacterCreator::CallRemoteFunction(UFunction* Function, void* Parameters, FOutParmRec* OutParms, FFrame* Stack)
+{
+	check(!HasAnyFlags(RF_ClassDefaultObject));
+	check(GetOuter() != nullptr);
+
+	AActor* Owner = CastChecked<AActor>(GetOuter());
+
+	bool bProcessed = false;
+
+	FWorldContext* const Context = GEngine->GetWorldContextFromWorld(GetWorld());
+	if (Context != nullptr)
+	{
+		for (FNamedNetDriver& Driver : Context->ActiveNetDrivers)
+		{
+			if (Driver.NetDriver != nullptr && Driver.NetDriver->ShouldReplicateFunction(Owner, Function))
+			{
+				Driver.NetDriver->ProcessRemoteFunction(Owner, Function, Parameters, OutParms, Stack, this);
+				bProcessed = true;
+			}
+		}
+	}
+	return bProcessed;
+}
+
+UWorld* UCharacterCreator::GetWorld() const
+{
+	if (HasAllFlags(RF_ClassDefaultObject))
+	{
+		// If we are a CDO, we must return nullptr instead of calling Outer->GetWorld() to fool UObject::ImplementsGetWorld.
+		return nullptr;
+	}
+	return GetOuter()->GetWorld();
+}
+
 float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
 {
 	for (FCCAttributeValue AttributeValue : AttributeValues)
@@ -34,6 +79,7 @@ float UCharacterCreator::ValueOf(UCharacterCreatorAttribute* CCAttribute)
 void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
 {
 	bool bIsFound = false;
+
 	for (FCCAttributeValue& AttributeValue : AttributeValues)
 	{
 		if (AttributeValue.Attribute == CCAttribute)
@@ -47,10 +93,23 @@ void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribut
 	{
 		AttributeValues.Emplace(CCAttribute, NewValue);//We create a new entry otherwise
 	}
-	//OnChanged.Broadcast();
-	OnAttributeChangedDelegate.Broadcast(CCAttribute, NewValue);
-}
 
+	Multicast_AttributeChanged(CCAttribute, NewValue);
+}
+void UCharacterCreator::Multicast_AttributeChanged_Implementation(UCharacterCreatorAttribute* Attribute, float NewValue)
+{
+	UE_LOG(LogTemp, Log, TEXT("UCharacterCreator::Multicast_AttributeChanged_Implementation() Called, Attribute: %s and Value: %f"), *Attribute->GetName(), NewValue);
+
+	//if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	//}
+	OnAttributeChangedDelegate.Broadcast(Attribute, NewValue);
+}
 
 UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorOutfitSlot* Slot)
 {
@@ -83,6 +142,11 @@ void UCharacterCreator::SetOutfit(UCharacterCreatorOutfit* Outfit)
 	{
 		SlotAndOutfitArray.Emplace(Outfit->Slot, Outfit);//We create a new entry otherwise
 	}
-	OnOutfitChangedDelegate.Broadcast(Outfit);
-	//OnChanged.Broadcast();
+	Multicast_OutfitChanged(Outfit);
 }
+
+void UCharacterCreator::Multicast_OutfitChanged_Implementation(UCharacterCreatorOutfit* Outfit)
+{
+	OnOutfitChangedDelegate.Broadcast(Outfit);	
+}
+

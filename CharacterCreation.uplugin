@@ -16,10 +16,6 @@
   "Installed": false,
   "Plugins": [
     {
-      "Name": "MorphTools",
-      "Enabled": true
-    },
-    {
       "Name": "SkeletalMeshMerger",
       "Enabled": true
     }

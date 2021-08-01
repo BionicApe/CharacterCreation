@@ -26,7 +26,7 @@ public class CharacterCreation : ModuleRules
 			{
 				"Core",
 				"Engine",
-				"MorphToolsRuntime",
+				//"MorphToolsRuntime",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);

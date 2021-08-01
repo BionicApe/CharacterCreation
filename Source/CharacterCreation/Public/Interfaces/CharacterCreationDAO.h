@@ -52,3 +52,34 @@ public:
 
 	virtual void LoadCharacterCreator(int32 Id, FAsyncLoadCharacterCreatorDelegate Delegate) = 0;
 };
+
+#pragma region DAOOwner
+
+/**
+*
+* This class needs to be implemented by the GameInstance, it would hold provide class that implements ICharacterCreationDAO
+* 
+*/
+UINTERFACE(Blueprintable)
+class CHARACTERCREATION_API UCharacterCreationDAOOwner : public UInterface
+{
+	GENERATED_BODY()
+
+};
+
+/**
+*
+* This class needs to be implemented by the GameInstance, it would hold provide class that implements ICharacterCreationDAO
+*
+*/
+class ICharacterCreationDAOOwner
+{
+	GENERATED_BODY()
+
+public:
+
+	virtual ICharacterCreationDAO* GetCharacterCreationDAO() const = 0;
+	virtual void SetCharacterCreationDAO(ICharacterCreationDAO* Dao) = 0;
+};
+
+#pragma endregion

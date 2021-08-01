@@ -2,16 +2,6 @@
 
 
 #include "Subsystems/CharacterCreationSubsystem.h"
-#include "UObject/Object.h"
-#include "Engine/World.h"
-#include "Engine/DataTable.h"
-#include "Engine/SkeletalMesh.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include <CharacterCreatorOutfitsSet.h>
-#include <CharacterCreatorOutfit.h>
-#include <CharacterCreationTypes.h>
-#include <CharacterCreatorOutfitSlot.h>
 #include "Engine/GameInstance.h"
 
 static const FString ContextString(TEXT("Character Creation"));
@@ -21,15 +11,10 @@ void UCharacterCreationSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 {
 	Super::Initialize(Collection);
 
-	if (UGameInstance* GameInstance = GetGameInstance())
+	DaoOwner = Cast<ICharacterCreationDAOOwner>(GetGameInstance());
+
+	if (!DaoOwner)
 	{
-		for (UGameInstanceSubsystem* Subsystem : GameInstance->GetSubsystemArray<UGameInstanceSubsystem>())
-		{
-			if (ICharacterCreationDAO* CCDao = Cast<ICharacterCreationDAO>(Subsystem))
-			{
-				Dao = CCDao;
-				break;
-			}
-		}
+		UE_LOG(LogTemp, Error, TEXT("UCharacterCreationSubsystem::Initialize() Game Instance Doesn't implement ICharacterCreationDAOOwner!!"));
 	}
 }

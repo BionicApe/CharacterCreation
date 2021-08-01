@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "MorphToolsDatatypes.h"
 #include "CharacterCreatorAttributeDH.generated.h"
 
 class UCharacterCreatorAttribute;

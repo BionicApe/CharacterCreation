@@ -24,7 +24,7 @@ public:
 	FName FriendlyName;
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	int32 DatabaseColumnIndex;
+	FString DatabaseColumnName;
 	
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	bool bIsRoot = false;

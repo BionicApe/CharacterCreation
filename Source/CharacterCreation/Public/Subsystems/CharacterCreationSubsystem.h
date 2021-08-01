@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Subsystems/GameInstanceSubsystem.h"
-#include "CharacterCreationTypes.h"
+#include "Interfaces/CharacterCreationDAO.h"
 #include "CharacterCreationSubsystem.generated.h"
 
 class ICharacterCreationDAO;
@@ -12,7 +12,7 @@ class ICharacterCreationDAO;
 DECLARE_LOG_CATEGORY_EXTERN(CharacterCreationLog, Warning, All);
 
 /**
- * 
+ *
  */
 UCLASS()
 class CHARACTERCREATION_API UCharacterCreationSubsystem : public UGameInstanceSubsystem
@@ -20,12 +20,12 @@ class CHARACTERCREATION_API UCharacterCreationSubsystem : public UGameInstanceSu
 	GENERATED_BODY()
 
 private:
-	
-	ICharacterCreationDAO* Dao;
-	
+
+	ICharacterCreationDAOOwner* DaoOwner;
+
 public:
 
 	void Initialize(FSubsystemCollectionBase& Collection) override;
 
-	ICharacterCreationDAO* GetDao() const { return Dao; }
+	ICharacterCreationDAO* GetDao() const { return DaoOwner ? DaoOwner->GetCharacterCreationDAO() : nullptr; }
 };

@@ -25,7 +25,7 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	//virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
+	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 	UFUNCTION(BlueprintCallable)
 	void AddCharacterCreator(UCharacterCreator* NewCharacterCreator);
@@ -34,12 +34,15 @@ public:
 	void SetAttributeValue(UCharacterCreator* NewCharacterCreator, UCharacterCreatorAttribute* CCAttribute, float NewValue);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerSetAttributeValue(UCharacterCreator* NewCharacterCreator, UCharacterCreatorAttribute* CCAttribute, float NewValue);
+	void Server_SetAttributeValue(UCharacterCreator* NewCharacterCreator, UCharacterCreatorAttribute* CCAttribute, float NewValue);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetOutfit(UCharacterCreator* CharacterCreator, UCharacterCreatorOutfit* SelectedOutfit);
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
-	void ServerSetOutfit(UCharacterCreator* CharacterCreator, UCharacterCreatorOutfit* SelectedOutfit);
+	void Server_SetOutfit(UCharacterCreator* CharacterCreator, UCharacterCreatorOutfit* SelectedOutfit);
+
+	UFUNCTION(Server, Reliable, BlueprintCallable)
+	void Server_SaveCharacterCreator(UCharacterCreator* CharacterCreator);
 };
 

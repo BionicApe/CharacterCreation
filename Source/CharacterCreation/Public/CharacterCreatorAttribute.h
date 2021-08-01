@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "MorphToolsDatatypes.h"
 #include "CharacterCreatorAttribute.generated.h"
 
 /**
@@ -30,5 +29,5 @@ public:
 	float MorphMax = 1.f;
 
 	UPROPERTY(EditInstanceOnly)
-	int32 DatabaseColumnIndex;
+	FString DatabaseColumnName;
 };

@@ -27,29 +27,20 @@ public:
 	TArray<UCharacterCreatorAttributesSet*> AttributesSets;
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	TMap<UCharacterCreatorOutfitSlot*,UCharacterCreatorOutfitsSet*> OutfitSets;
+	TMap<FString, UCharacterCreatorAttribute*> Attributes;
 
-	
-	//TODO: I think it can be devided these 3 properties to another class, they are only used by the database
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	int32 DatabaseIdColumn;
+	TMap<UCharacterCreatorOutfitSlot*,UCharacterCreatorOutfitsSet*> OutfitSets;
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	TArray<UCharacterCreatorOutfitSlot*> Slots;
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	TMap<int32, UCharacterCreatorOutfit*> Outfits;
+	TMap<FString, UCharacterCreatorOutfitSlot*> SlotsMap;
 
-//
-//public:
-//
-//	float ValueOf(UCharacterCreatorAttribute* CCAttribute);
-//
-//	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
-//
-//	int32 GetSelectedOutfitIndex(UCharacterCreatorOutfitsSet* CCOutfitSet);
-//
-//	UCharacterCreatorOutfit* GetSelectedOutfit(UCharacterCreatorOutfitsSet* CCOutfitSet);
-//
-//	void SetOutfit(UCharacterCreatorOutfitsSet* CCOutfitSet, int32 Index);
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	TMap<FString, UCharacterCreatorOutfit*> OutfitsMap;
+
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	TMap<int32, UCharacterCreatorOutfit*> Outfits;
 };

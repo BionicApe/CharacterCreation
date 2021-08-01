@@ -27,10 +27,17 @@ UCharacterCreatorComponent::UCharacterCreatorComponent()
 void UCharacterCreatorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	if (GetOwner()->GetLocalRole() == ROLE_Authority)
+	
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		ReloadCurrentCharacterCreator();
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
 	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
+	ReloadCurrentCharacterCreator();
 }
 
 void UCharacterCreatorComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -49,18 +56,45 @@ bool UCharacterCreatorComponent::ReplicateSubobjects(class UActorChannel* Channe
 
 void UCharacterCreatorComponent::OnRep_CharacterCreator()
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
 	SetCharacterCreator(CharacterCreator);
 }
 void UCharacterCreatorComponent::SetCharacterCreator(UCharacterCreator* NewCharacterCreator)
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
 	CharacterCreator = NewCharacterCreator;
 	ReloadCurrentCharacterCreator();
 }
 
 void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 {
-	USkeletalMeshComponent* SkComp = SlotMeshMap.FindRef(Outfit->Slot);
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
 
+
+	USkeletalMeshComponent* SkComp = SlotMeshMap.FindRef(Outfit->Slot);
 	if (!SkComp)
 	{
 		if (Outfit->Slot->bIsRoot)
@@ -70,7 +104,6 @@ void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 		else
 		{
 			SkComp = NewObject<USkeletalMeshComponent>(GetOwner());
-			SkComp->SetIsReplicated(true);
 			SkComp->bUseAttachParentBound = true;
 			SkComp->SetWorldTransform(FTransform::Identity);
 			SkComp->AttachToComponent(RootSkeletalMesh, FAttachmentTransformRules::KeepRelativeTransform);
@@ -84,6 +117,15 @@ void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 
 bool UCharacterCreatorComponent::LoadCharacterCreatorFromDatabase()
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
 	UCharacterCreationSubsystem* CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
 	if (CCSubsystem->GetDao())
 	{
@@ -95,6 +137,15 @@ bool UCharacterCreatorComponent::LoadCharacterCreatorFromDatabase()
 
 bool UCharacterCreatorComponent::SaveCharacterCreatorToDatabase()
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
 	UCharacterCreationSubsystem* CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
 	if (CCSubsystem->GetDao())
 	{
@@ -118,6 +169,15 @@ void UCharacterCreatorComponent::OnSaveDaoResponse(FAsyncCharacterCreatorRespons
 
 void UCharacterCreatorComponent::OnLoadDaoResponse(FAsyncCharacterCreatorResponse Response)
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
 	if (Response.bIsSuccessful)
 	{
 		SetCharacterCreator(Response.CharacterCreator);
@@ -131,7 +191,14 @@ void UCharacterCreatorComponent::OnLoadDaoResponse(FAsyncCharacterCreatorRespons
 
 void UCharacterCreatorComponent::OnChangedReceived()
 {
-
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
 	//ReloadCurrentCharacterCreator();
 
 	//if (GetOwner()->GetLocalRole() == ROLE_Authority)
@@ -142,68 +209,89 @@ void UCharacterCreatorComponent::OnChangedReceived()
 
 void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 {
-	if (GetOwner() && GetOwner()->GetLocalRole() == ROLE_Authority)
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		bool bAreDifferent = CharacterCreator != CharacterCreatorLastUsed;
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
 
-		if (bAreDifferent)
+	bool bAreDifferent = CharacterCreator != CharacterCreatorLastUsed;
+
+	if (bAreDifferent)
+	{
+		//Destroy Meshes and empty SlotMeshMap, they aren't valid anymore
+		for (auto SlotMes : SlotMeshMap)
 		{
-			//Destroy Meshes and empty SlotMeshMap, they aren't valid anymore
-			for (auto SlotMes : SlotMeshMap)
+			if (SlotMes.Key->bIsRoot)
 			{
-				if (SlotMes.Key->bIsRoot)
-				{
-					SlotMes.Value->SetSkeletalMesh(nullptr);
-				}
-				else
-				{
-					SlotMes.Value->DestroyComponent(false);
-				}
+				SlotMes.Value->SetSkeletalMesh(nullptr);
 			}
-
-			SlotMeshMap.Empty();
-
-			if (CharacterCreatorLastUsed)
+			else
 			{
-				CharacterCreatorLastUsed->OnChanged.RemoveDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
-				CharacterCreatorLastUsed->OnOutfitChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
-				CharacterCreatorLastUsed->OnAttributeChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
-			}
-
-			if (CharacterCreator)
-			{
-				CharacterCreator->OnChanged.AddDynamic(this, &UCharacterCreatorComponent::OnChangedReceived);
-				CharacterCreator->OnOutfitChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
-				CharacterCreator->OnAttributeChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+				SlotMes.Value->DestroyComponent(false);
 			}
 		}
 
-		CharacterCreatorLastUsed = CharacterCreator;//This is crucial to keep track of the generation
+		SlotMeshMap.Empty();
+
+		if (CharacterCreatorLastUsed)
+		{
+			CharacterCreatorLastUsed->OnOutfitChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
+			CharacterCreatorLastUsed->OnAttributeChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+		}
 
 		if (CharacterCreator)
 		{
-			//I assign all outfits regardless of they are different or not
-			for (const FCCSlotAndOutfit& SlotAndOutfit : CharacterCreator->SlotAndOutfitArray)
-			{
-				SetOutfit(SlotAndOutfit.Outfit);
-			}
+			CharacterCreator->OnOutfitChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
+			CharacterCreator->OnAttributeChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+		}
+	}
 
-			for (const FCCAttributeValue& AttributeValue : CharacterCreator->AttributeValues)
-			{
-				RootSkeletalMesh->SetMorphTarget(AttributeValue.Attribute->MorphName, AttributeValue.Value);
-			}
+	CharacterCreatorLastUsed = CharacterCreator;//This is crucial to keep track of the generation
+
+	if (CharacterCreator)
+	{
+		//I assign all outfits regardless of they are different or not
+		for (const FCCSlotAndOutfit& SlotAndOutfit : CharacterCreator->SlotAndOutfitArray)
+		{
+			SetOutfit(SlotAndOutfit.Outfit);
+		}
+
+		for (const FCCAttributeValue& AttributeValue : CharacterCreator->AttributeValues)
+		{
+			RootSkeletalMesh->SetMorphTarget(AttributeValue.Attribute->MorphName, AttributeValue.Value);
 		}
 	}
 }
 
 void UCharacterCreatorComponent::OnOutfitChangedReceived(UCharacterCreatorOutfit* Outfit)
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
 	SetOutfit(Outfit);
 }
 
 
 void UCharacterCreatorComponent::OnAttributeChangedReceived(UCharacterCreatorAttribute* Attribute, float Value)
 {
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
 	if (RootSkeletalMesh && Attribute)
 	{
 		RootSkeletalMesh->SetMorphTarget(Attribute->MorphName, Value);

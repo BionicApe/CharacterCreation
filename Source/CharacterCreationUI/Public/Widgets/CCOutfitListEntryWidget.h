@@ -48,6 +48,8 @@ public:
 	UFUNCTION()
 	void OnRightClicked();
 
+	void SetOutfit(bool bDirectionIsLeft);
+
 protected:
 
 	void NativeOnListItemObjectSet(UObject* ListItemObject) override;

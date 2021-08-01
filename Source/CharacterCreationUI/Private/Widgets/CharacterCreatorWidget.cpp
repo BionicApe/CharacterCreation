@@ -15,12 +15,18 @@
 #include "CharacterCreatorOutfitsSet.h"
 #include "CharacterCreatorModel.h"
 #include "Components/CharacterCreatorComponent.h"
+#include "Components/CharacterCreatorControlComponent.h"
 
 
 bool UCharacterCreatorWidget::Initialize()
 {
 	if (Super::Initialize())
 	{
+		if (SaveButton)
+		{
+			SaveButton->OnClicked.AddDynamic(this, &UCharacterCreatorWidget::OnSaveButtonClicked);
+		}
+
 		if (APawn* Pawn = GetOwningPlayerPawn())
 		{
 			if (UCharacterCreatorComponent* CCComp = Cast<UCharacterCreatorComponent>(Pawn->GetComponentByClass(UCharacterCreatorComponent::StaticClass())))
@@ -123,5 +129,17 @@ void UCharacterCreatorWidget::CreateTab(FText TabText, UCCAttributesSetTabWidget
 
 		//Add Tab Button to the horizontal box
 		UHorizontalBoxSlot* HorizontalBoxSlot = AttributesTabs->AddChildToHorizontalBox(TabWidget);
+	}
+}
+
+
+void UCharacterCreatorWidget::OnSaveButtonClicked()
+{
+	if (APlayerController* PC = GetOwningPlayer())
+	{
+		if (UCharacterCreatorControlComponent* CCControlComp = Cast<UCharacterCreatorControlComponent>(PC->GetComponentByClass(UCharacterCreatorControlComponent::StaticClass())))
+		{
+			CCControlComp->Server_SaveCharacterCreator(CharacterCreator);
+		}
 	}
 }

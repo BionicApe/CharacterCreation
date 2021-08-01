@@ -5,7 +5,6 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
-#include "MorphToolsDatatypes.h"
 #include "Engine/DataTable.h"
 #include "CharacterCreationTypes.generated.h"
 
