@@ -13,6 +13,7 @@ void UCharacterCreatorControlComponent::GetLifetimeReplicatedProps(TArray<FLifet
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UCharacterCreatorControlComponent, CharacterCreators);
+	DOREPLIFETIME(UCharacterCreatorControlComponent, MainCharacterCreator);
 }
 
 bool UCharacterCreatorControlComponent::ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags)
@@ -22,11 +23,14 @@ bool UCharacterCreatorControlComponent::ReplicateSubobjects(class UActorChannel*
 	return WroteSomething;
 }
 
-void UCharacterCreatorControlComponent::AddCharacterCreator(UCharacterCreator* NewCharacterCreator)
+void UCharacterCreatorControlComponent::AddCharacterCreator(UCharacterCreator* NewCharacterCreator, bool bIsMainCC /*= true*/)
 {
 	CharacterCreators.AddUnique(NewCharacterCreator);
+	if (bIsMainCC)
+	{
+		MainCharacterCreator = NewCharacterCreator;
+	}
 }
-
 
 void UCharacterCreatorControlComponent::SetAttributeValue(UCharacterCreator* NewCharacterCreator, UCharacterCreatorAttribute* CCAttribute, float NewValue)
 {

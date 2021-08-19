@@ -49,13 +49,14 @@ public:
 
 	FORCEINLINE UActorComponent* GetOwningComponent() const { return Cast<UActorComponent>(GetOuter()); }
 
+	//Functions Needed to replicate, from UObject
 	virtual bool IsSupportedForNetworking() const override { return true; }
 	//virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags); // note no override because this is the FIRST declaration of this function.
 	virtual void GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const override;
 	virtual bool CallRemoteFunction(UFunction* Function, void* Parameters, FOutParmRec* OutParms, FFrame* Stack) override;
 	virtual UWorld* GetWorld() const override;
 	virtual int32 GetFunctionCallspace(UFunction* Function, FFrame* Stack) override;
-
+	//End Functions Needed to replicate, from UObject
 
 	float ValueOf(UCharacterCreatorAttribute* CCAttribute);
 	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);

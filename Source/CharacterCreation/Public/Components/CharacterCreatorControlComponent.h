@@ -20,6 +20,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Replicated)
 	TArray<UCharacterCreator*> CharacterCreators;
+
+	UPROPERTY(VisibleAnywhere, Replicated)
+	UCharacterCreator* MainCharacterCreator;
 	
 public:
 
@@ -28,7 +31,7 @@ public:
 	virtual bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 	UFUNCTION(BlueprintCallable)
-	void AddCharacterCreator(UCharacterCreator* NewCharacterCreator);
+	void AddCharacterCreator(UCharacterCreator* NewCharacterCreator, bool bIsMainCC = true);
 	
 	UFUNCTION(BlueprintCallable)
 	void SetAttributeValue(UCharacterCreator* NewCharacterCreator, UCharacterCreatorAttribute* CCAttribute, float NewValue);

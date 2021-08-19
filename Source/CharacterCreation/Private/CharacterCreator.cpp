@@ -100,14 +100,14 @@ void UCharacterCreator::Multicast_AttributeChanged_Implementation(UCharacterCrea
 {
 	UE_LOG(LogTemp, Log, TEXT("UCharacterCreator::Multicast_AttributeChanged_Implementation() Called, Attribute: %s and Value: %f"), *Attribute->GetName(), NewValue);
 
-	//if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT("I'm Server"));
-	//}
-	//else
-	//{
-	//	UE_LOG(LogTemp, Log, TEXT("I'm Client"));
-	//}
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
 	OnAttributeChangedDelegate.Broadcast(Attribute, NewValue);
 }
 
