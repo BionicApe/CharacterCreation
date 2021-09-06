@@ -70,7 +70,7 @@ void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementati
 		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() CharacterCreator not found in CharacterCreators"));
 		return;
 	}
-	
+
 	if (!GetWorld() || !GetWorld()->GetGameInstance())
 	{
 		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() World is null or GameInstance is null"));
@@ -81,6 +81,12 @@ void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementati
 	if (ICharacterCreationDAO* const DAO = CCSubsystem->GetDao())
 	{
 		FAsyncSaveCharacterCreatorDelegate Delegate;
+		//Delegate.BindUObject(this, &UCharacterCreatorControlComponent::OnDaoResponse);
 		DAO->SaveCharacterCreator(CharacterCreator, Delegate);
 	}
+}
+
+void UCharacterCreatorControlComponent::OnDaoResponse(FAsyncCharacterCreatorResponse Response)
+{
+	Client_Notify(Response.bIsSuccessful, Response.ErrorMessage);
 }

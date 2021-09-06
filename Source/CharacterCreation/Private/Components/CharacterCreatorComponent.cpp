@@ -18,10 +18,10 @@ UCharacterCreatorComponent::UCharacterCreatorComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
-	//OnSaveToDBDelegate.AddUObject(this, &UCharacterCreatorComponent::OnSaveDaoResponse);
-	//OnLoadToDBDelegate.AddUObject(this, &UCharacterCreatorComponent::OnLoadDaoResponse);
-	OnSaveToDBDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnSaveDaoResponse);
-	OnLoadToDBDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnLoadDaoResponse);
+	////OnSaveToDBDelegate.AddUObject(this, &UCharacterCreatorComponent::OnSaveDaoResponse);
+	////OnLoadToDBDelegate.AddUObject(this, &UCharacterCreatorComponent::OnLoadDaoResponse);
+	//OnSaveToDBDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnSaveDaoResponse);
+	//OnLoadToDBDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnLoadDaoResponse);
 }
 
 void UCharacterCreatorComponent::BeginPlay()
@@ -129,7 +129,7 @@ bool UCharacterCreatorComponent::LoadCharacterCreatorFromDatabase()
 	UCharacterCreationSubsystem* CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
 	if (CCSubsystem->GetDao())
 	{
-		CCSubsystem->GetDao()->LoadCharacterCreator(DatabaseId, OnLoadToDBDelegate);
+		//CCSubsystem->GetDao()->LoadCharacterCreator(DatabaseId, OnLoadToDBDelegate);
 		return true;
 	}
 	return false;
@@ -149,7 +149,7 @@ bool UCharacterCreatorComponent::SaveCharacterCreatorToDatabase()
 	UCharacterCreationSubsystem* CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
 	if (CCSubsystem->GetDao())
 	{
-		CCSubsystem->GetDao()->SaveCharacterCreator(CharacterCreator, OnSaveToDBDelegate);
+		//CCSubsystem->GetDao()->SaveCharacterCreator(CharacterCreator, OnSaveToDBDelegate);
 		return true;
 	}
 	return false;

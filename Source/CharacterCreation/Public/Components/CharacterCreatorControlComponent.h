@@ -3,7 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "Components/ControlComponent.h"
+#include "Interfaces/CharacterCreationDAO.h"
 #include "CharacterCreatorControlComponent.generated.h"
 
 class UCharacterCreator;
@@ -11,7 +12,7 @@ class UCharacterCreatorAttribute;
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class CHARACTERCREATION_API UCharacterCreatorControlComponent : public UActorComponent
+class CHARACTERCREATION_API UCharacterCreatorControlComponent : public UControlComponent
 {
 	GENERATED_BODY()
 
@@ -47,5 +48,8 @@ public:
 
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_SaveCharacterCreator(UCharacterCreator* CharacterCreator);
+
+	UFUNCTION()
+	void OnDaoResponse(FAsyncCharacterCreatorResponse Response);
 };
 
