@@ -38,6 +38,7 @@ public class CharacterCreationUI : ModuleRules
 				"CoreUObject",
 				"Slate",
 				"SlateCore",
+				"BionicApeUI",
 				"CharacterCreation",
 				// ... add private dependencies that you statically link with here ...	
 			}

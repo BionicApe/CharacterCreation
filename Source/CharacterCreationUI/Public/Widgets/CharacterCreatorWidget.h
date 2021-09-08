@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+
+#include "UI/AlertWidget.h"
+
 #include "CharacterCreatorWidget.generated.h"
 
 class UCharacterCreator;
@@ -49,6 +52,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Widgets)
 	TSubclassOf<UCCAttributesSetTabContentWidget> TabContentWidgetClass;
+
+public:
+
+	UPROPERTY(BlueprintAssignable, BlueprintReadWrite)
+	FOnBAWidgetClosed OnBAWidgetClosed;
 
 public:
 	
