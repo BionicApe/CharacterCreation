@@ -4,19 +4,45 @@
 #include "IAssetTools.h"
 #include "Modules/ModuleManager.h"
 #include "AssetToolsModule.h"
-#include "CharacterCreatorTypeActions.h"
-#include "CharacterCreatorAttributeTypeActions.h"
-#include "CharacterCreatorAttributesSetTypeActions.h"
-#include "CharacterCreatorOutfitsSetTypeActions.h"
-#include "CharacterCreatorOutfitTypeActions.h"
-#include <CharacterCreatorOutfitSlotTypeActions.h>
-#include <CharacterCreatorModelTypeActions.h>
+
+#include "TypeActions/CharacterCreatorTypeActions.h"
+#include "TypeActions/CharacterCreatorAttributeTypeActions.h"
+#include "TypeActions/CharacterCreatorAttributesSetTypeActions.h"
+#include "TypeActions/CharacterCreatorOutfitsSetTypeActions.h"
+#include "TypeActions/CharacterCreatorOutfitTypeActions.h"
+#include "TypeActions/CharacterCreatorOutfitSlotTypeActions.h"
+#include "TypeActions/CharacterCreatorModelTypeActions.h"
+
+#include "Framework/Commands/UICommandList.h"
+#include "CharacterCreationStyle.h"
+#include "CharacterCreationCommands.h"
+#include "Classes/EditorStyleSettings.h"
+#include "LevelEditor.h"
+#include "Private/Workbench/CCWorkBench.h"
+
+#include "Workbench/SCCWorkbench.h"
+#include "DetailCustomization/BASkeletalMeshDetailCustomization.h"
 
 #define LOCTEXT_NAMESPACE "FCharacterCreationEditorModule"
 
 void FCharacterCreationEditorModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	//Call this to make sure AnimGraph module is setup
+	FModuleManager::Get().LoadModuleChecked(TEXT("Persona"));
+
+	//Custom Class Layout
+	{
+		FPropertyEditorModule& PropertyModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
+		PropertyModule.RegisterCustomClassLayout(USkeletalMesh::StaticClass()->GetFName(), FOnGetDetailCustomizationInstance::CreateStatic(&FBASkeletalMeshDetailCustomization::MakeInstance));
+
+		PropertyModule.NotifyCustomizationModuleChanged();
+	}
+
+	//Style
+	FCharacterCreationStyle::Initialize();
+	FCharacterCreationStyle::ReloadTextures();
+	//End Style
+
 
 	// Assets Category
 	IAssetTools& AssetTools = FModuleManager::LoadModuleChecked<FAssetToolsModule>("AssetTools").Get();
@@ -29,13 +55,25 @@ void FCharacterCreationEditorModule::StartupModule()
 	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorOutfitsSetTypeActions(AssetCategoryBit)));
 	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorOutfitSlotTypeActions(AssetCategoryBit)));
 	AssetTools.RegisterAssetTypeActions(MakeShareable(new FCharacterCreatorModelTypeActions(AssetCategoryBit)));
+
+	FCharacterCreationStyle::Initialize();
+
+	FCharacterCreationCommands::Register();
+	
+	FCCWorkbench::Register();
+
+	PluginCommands = MakeShareable(new FUICommandList);
+	PluginCommands->MapAction
+	(
+		FCharacterCreationCommands::Get().OpenCharacterCreationEditorAction,
+		FExecuteAction::CreateStatic(&FCCWorkbench::Launch)
+	);
 }
 
 void FCharacterCreationEditorModule::ShutdownModule()
 {
-	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
-	// we call this function before unloading the module.
 }
+
 
 #undef LOCTEXT_NAMESPACE
 

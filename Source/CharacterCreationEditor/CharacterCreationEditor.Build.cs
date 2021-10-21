@@ -28,7 +28,13 @@ public class CharacterCreationEditor : ModuleRules
 			new string[]
 			{
 				"Core",
+				"CoreUObject",
+				"Engine",
+				"Slate",
+				"SlateCore",
+                "UnrealEd",
                 "CharacterCreation",
+				"Persona",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -37,11 +43,36 @@ public class CharacterCreationEditor : ModuleRules
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"CoreUObject",
-				"Engine",
-				"Slate",
-				"SlateCore",
-                "UnrealEd"
+				"InputCore",
+				"PropertyEditor",
+				"LevelEditor",
+				"WorkspaceMenuStructure",
+				"EditorStyle",
+				"ToolMenus",
+				"RenderCore",
+				"RHI",
+				"MeshConversion",
+				"ApplicationCore",
+				"Projects",
+				"MeshDescription",
+				"StaticMeshDescription",
+				"MeshDescriptionOperations",
+				"ViewportInteraction",
+				"UMG",
+				"AssetTools",
+				"AssetRegistry",
+				"Settings",
+				"InteractiveToolsFramework",
+				"EditorInteractiveToolsFramework",
+				"MeshModelingTools",
+				"MeshModelingToolsEditorOnly",
+				"ViewportInteraction",
+				"DynamicMesh",
+				"ModelingComponents",
+				"GeometricObjects",
+				"AdvancedPreviewScene",
+				"MeshUtilities",
+				"ContentBrowser"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

@@ -9,7 +9,12 @@ class FCharacterCreationEditorModule : public IModuleInterface
 {
 public:
 
-	/** IModuleInterface implementation */
 	virtual void StartupModule() override;
+
 	virtual void ShutdownModule() override;
+
+private:
+	
+	TSharedPtr<class FUICommandList> PluginCommands;
+	
 };

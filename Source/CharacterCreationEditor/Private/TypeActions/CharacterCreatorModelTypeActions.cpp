@@ -1,6 +1,6 @@
 // Created by Bionic Ape. All Rights Reserved.
 
-#include "CharacterCreatorModelTypeActions.h"
+#include "TypeActions/CharacterCreatorModelTypeActions.h"
 #include "CharacterCreatorModel.h"
 
 #define LOCTEXT_NAMESPACE "CharacterCreatorModel_TypeActions"

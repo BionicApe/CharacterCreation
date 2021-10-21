@@ -39,6 +39,15 @@
 		{
 			"Name": "SkeletalMeshMerger",
 			"Enabled": true
+		},
+		{
+			"Name": "GeometryProcessing",
+			"Enabled": true
+		},
+		{
+			"Name": "MeshModelingToolset",
+			"Enabled": true
 		}
+		
 	]
 }

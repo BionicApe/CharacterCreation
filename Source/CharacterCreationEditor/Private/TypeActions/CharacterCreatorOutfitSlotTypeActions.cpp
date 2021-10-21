@@ -1,6 +1,6 @@
 // Created by Bionic Ape. All Rights Reserved.
 
-#include "CharacterCreatorOutfitSlotTypeActions.h"
+#include "TypeActions/CharacterCreatorOutfitSlotTypeActions.h"
 #include "CharacterCreatorOutfitSlot.h"
 
 #define LOCTEXT_NAMESPACE "CharacterCreatorOutfitSlot_TypeActions"
