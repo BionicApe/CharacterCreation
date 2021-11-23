@@ -8,6 +8,7 @@
 void FCharacterCreationCommands::RegisterCommands()
 {
 	UI_COMMAND(OpenCharacterCreationEditorAction, "Character Creation Editor", "Opens Character Creation Editor", EUserInterfaceActionType::Button, FInputGesture());
+	UI_COMMAND(OpenSkeletalDialog, "Character Creation Tools", "Opens Character Creation Tools Dialog", EUserInterfaceActionType::Button, FInputGesture());
 }
 
 #undef LOCTEXT_NAMESPACE

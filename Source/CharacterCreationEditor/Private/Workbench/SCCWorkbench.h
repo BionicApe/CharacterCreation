@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "Widgets/Docking/SDockTab.h"
 #include "SCCWorkbenchViewport.h"
+#include "UObject/GCObject.h"
+#include "Widgets/SCompoundWidget.h"
 
-class SCCWorkbench : public SDockTab
+class CHARACTERCREATIONEDITOR_API SCCWorkbench : public SCompoundWidget
 {
 
 	SLATE_BEGIN_ARGS(SCCWorkbench)
@@ -16,7 +17,6 @@ class SCCWorkbench : public SDockTab
 private:
 
 	TSharedPtr<class SCCWorkbenchViewport> PreviewViewport;
-
 
 public:
 

@@ -22,4 +22,6 @@ public:
 
 	TSharedPtr<FUICommandInfo> OpenCharacterCreationEditorAction;
 
+	TSharedPtr<FUICommandInfo> OpenSkeletalDialog;
+
 };

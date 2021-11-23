@@ -50,6 +50,7 @@ TSharedRef< FSlateStyleSet > FCharacterCreationStyle::Create()
 	Style->Set("CharacterCreationEditor.OpenPluginWindow", new IMAGE_BRUSH(TEXT("ButtonIcon_40x"), Icon40x40));
 	Style->Set("CharacterCreationEditor.TabIcon", new IMAGE_BRUSH("ButtonIcon_40x", Icon40x40));
 	Style->Set("CharacterCreationEditor.TabIcon.Small", new IMAGE_BRUSH("ButtonIcon_40x", Icon40x40));
+	Style->Set("CharacterCreationEditor.Toolbar.IconMain", new IMAGE_BRUSH("ButtonIcon_40x", Icon40x40));
 
 	return Style;
 }

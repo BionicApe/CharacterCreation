@@ -44,6 +44,7 @@ public class CharacterCreationEditor : ModuleRules
 			new string[]
 			{
 				"InputCore",
+				"AnimGraph",
 				"PropertyEditor",
 				"LevelEditor",
 				"WorkspaceMenuStructure",
