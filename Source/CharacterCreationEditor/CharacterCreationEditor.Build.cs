@@ -70,10 +70,10 @@ public class CharacterCreationEditor : ModuleRules
 				"ViewportInteraction",
 				"DynamicMesh",
 				"ModelingComponents",
-				"GeometricObjects",
 				"AdvancedPreviewScene",
 				"MeshUtilities",
-				"ContentBrowser"
+				"ContentBrowser",
+				"RawMesh"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
