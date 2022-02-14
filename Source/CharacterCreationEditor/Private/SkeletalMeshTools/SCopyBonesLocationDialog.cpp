@@ -182,7 +182,7 @@ void SCopyBonesLocationDialog::Construct(const FArguments& InArgs)
 		.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::Cancel)
 		.IsEnabled(true)
 		]
-	+ SUniformGridPanel::Slot(1, 0)
+			+ SUniformGridPanel::Slot(1, 0)
 		[
 			SNew(SButton)
 			.HAlign(HAlign_Center)

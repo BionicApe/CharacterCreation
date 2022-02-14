@@ -36,29 +36,29 @@ namespace
 
 void FCCWorkbench::Register()
 {
-	FGlobalTabmanager::Get()->RegisterNomadTabSpawner(
-		CCWorkbenchWindowID,
-		FOnSpawnTab::CreateStatic(&SpawnNomadTab))
-			.SetDisplayName(LOCTEXT("TabTitle", "Character Creator Workbench"))
-			.SetTooltipText(LOCTEXT("TooltipText", "Access all Bionic Character Creator Workbench Tools"))
-			.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
-			.SetIcon(FSlateIcon(FCharacterCreationStyle::GetStyleSetName(),
-		"CharacterCreationEditor.Image")
-	);
+	//FGlobalTabmanager::Get()->RegisterNomadTabSpawner(
+	//	CCWorkbenchWindowID,
+	//	FOnSpawnTab::CreateStatic(&SpawnNomadTab))
+	//		.SetDisplayName(LOCTEXT("TabTitle", "Character Creator Workbench"))
+	//		.SetTooltipText(LOCTEXT("TooltipText", "Access all Bionic Character Creator Workbench Tools"))
+	//		.SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
+	//		.SetIcon(FSlateIcon(FCharacterCreationStyle::GetStyleSetName(),
+	//	"CharacterCreationEditor.Image")
+	//);
 
-	UToolMenu* AssetsToolBar = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.AssetsToolBar");
-	if (AssetsToolBar)
-	{
-		FToolMenuSection& Section = AssetsToolBar->AddSection("Content");
-		FToolMenuEntry ToolMenuEntry = FToolMenuEntry::InitToolBarButton(
-			"CharacterCreationEditorLaunchPad",
-			FUIAction(FExecuteAction::CreateStatic(&FCCWorkbench::Launch)),
-			LOCTEXT("CCWorkbench_Friendly", "Character Creator Workbench"),
-			LOCTEXT("CCWorkbench_Tooltip", "Character Creator Workbench Tools"),
-			FSlateIcon(FCharacterCreationStyle::GetStyleSetName(), TEXT("CharacterCreationEditor.Image")));
-		ToolMenuEntry.StyleNameOverride = "CalloutToolbar";
-		Section.AddEntry(ToolMenuEntry);
-	}
+	//UToolMenu* AssetsToolBar = UToolMenus::Get()->ExtendMenu("LevelEditor.LevelEditorToolBar.AssetsToolBar");
+	//if (AssetsToolBar)
+	//{
+	//	FToolMenuSection& Section = AssetsToolBar->AddSection("Content");
+	//	FToolMenuEntry ToolMenuEntry = FToolMenuEntry::InitToolBarButton(
+	//		"CharacterCreationEditorLaunchPad",
+	//		FUIAction(FExecuteAction::CreateStatic(&FCCWorkbench::Launch)),
+	//		LOCTEXT("CCWorkbench_Friendly", "Character Creator Workbench"),
+	//		LOCTEXT("CCWorkbench_Tooltip", "Character Creator Workbench Tools"),
+	//		FSlateIcon(FCharacterCreationStyle::GetStyleSetName(), TEXT("CharacterCreationEditor.Image")));
+	//	ToolMenuEntry.StyleNameOverride = "CalloutToolbar";
+	//	Section.AddEntry(ToolMenuEntry);
+	//}
 }
 
 void FCCWorkbench::Unregister()
