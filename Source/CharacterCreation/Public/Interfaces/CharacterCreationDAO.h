@@ -7,6 +7,7 @@
 
 
 class UCharacterCreator;
+class ICharacterCreationDAO;
 
 USTRUCT(BlueprintType, Blueprintable)
 struct CHARACTERCREATION_API FAsyncCharacterCreatorResponse
@@ -45,6 +46,10 @@ class CHARACTERCREATION_API UCharacterCreationDAO : public UInterface
 class ICharacterCreationDAO
 {
 	GENERATED_BODY()
+
+public:
+
+	//static ICharacterCreationDAO* DaoInstance;
 
 public:
 

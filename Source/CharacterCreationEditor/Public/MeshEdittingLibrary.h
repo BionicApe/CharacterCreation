@@ -9,13 +9,14 @@
 #include "Animation/MorphTarget.h"
 #include "Engine/StaticMesh.h"
 #include "SkeletalRenderPublic.h"
-#include "DynamicMesh3.h"
 #include "Engine/EngineTypes.h"
+#include "DynamicMesh/DynamicMesh3.h"
 #include "MeshEdittingLibrary.generated.h"
 
 class USkeletalMesh;
 class UBAMorphTarget;
 struct FMeshDescription;
+
 
 class FMeshMorpherMorphTargetInfo
 {
@@ -50,6 +51,8 @@ UCLASS()
 class CHARACTERCREATIONEDITOR_API UMeshEdittingLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+
+	
 public:
 	static void NotifyMessage(const FString& Message);
 	static bool CopySkeletalMeshMaterialsToStaticMesh(USkeletalMesh* SkeletalMesh, UStaticMesh* StaticMesh);
@@ -57,12 +60,12 @@ public:
 	static bool CopySkeletalMeshMaterials(USkeletalMesh* SkeletalMesh, TMap<int32, FName>& StaticMaterials);
 	static bool CopySkeletalMeshMaterials(USkeletalMesh* SkeletalMesh, TMap<FName, int32>& StaticMaterials);
 	static bool SetStaticMesh(UStaticMesh* StaticMesh, const FMeshDescription& MeshDescription);
-	static bool SkeletalMeshToDynamicMesh(USkeletalMesh* SkeletalMesh, FDynamicMesh3& IdenticalDynamicMesh, FDynamicMesh3* WeldedDynamicMesh = NULL, const TArray<FFinalSkinVertex>& FinalVertices = TArray<FFinalSkinVertex>(), int32 LOD = 0, bool bUseRenderData = true);
-	static bool SkeletalMeshToDynamicMesh_RenderData(USkeletalMesh* SkeletalMesh, FDynamicMesh3& IdenticalDynamicMesh, FDynamicMesh3* WeldedDynamicMesh = NULL, const TArray<FFinalSkinVertex>& FinalVertices = TArray<FFinalSkinVertex>(), int32 LOD = 0);
-	static void ApplyDeltasToDynamicMesh(const TArray<FMorphTargetDelta>& Deltas, FDynamicMesh3& DynamicMesh);
-	static void ApplyDeltasToDynamicMesh(FDynamicMesh3& SourceDynamicMesh, const TArray<FMorphTargetDelta>& Deltas, FDynamicMesh3& DynamicMesh);
-	static void GetMorphDeltas(const FDynamicMesh3& Original, const FDynamicMesh3& Changed, TArray<FMorphTargetDelta>& Deltas);
-	static void ApplyChangesToMorphTarget(USkeletalMesh* Mesh, const FDynamicMesh3& DynamicMesh, FString MorphTargetName, const FDynamicMesh3& Original, const FDynamicMesh3& Changed);
+	static bool SkeletalMeshToDynamicMesh(USkeletalMesh* SkeletalMesh, UE::Geometry::FDynamicMesh3& IdenticalDynamicMesh, UE::Geometry::FDynamicMesh3* WeldedDynamicMesh = NULL, const TArray<FFinalSkinVertex>& FinalVertices = TArray<FFinalSkinVertex>(), int32 LOD = 0, bool bUseRenderData = true);
+	static bool SkeletalMeshToDynamicMesh_RenderData(USkeletalMesh* SkeletalMesh, UE::Geometry::FDynamicMesh3& IdenticalDynamicMesh, UE::Geometry::FDynamicMesh3* WeldedDynamicMesh = NULL, const TArray<FFinalSkinVertex>& FinalVertices = TArray<FFinalSkinVertex>(), int32 LOD = 0);
+	static void ApplyDeltasToDynamicMesh(const TArray<FMorphTargetDelta>& Deltas, UE::Geometry::FDynamicMesh3& DynamicMesh);
+	static void ApplyDeltasToDynamicMesh(UE::Geometry::FDynamicMesh3& SourceDynamicMesh, const TArray<FMorphTargetDelta>& Deltas, UE::Geometry::FDynamicMesh3& DynamicMesh);
+	static void GetMorphDeltas(const UE::Geometry::FDynamicMesh3& Original, const UE::Geometry::FDynamicMesh3& Changed, TArray<FMorphTargetDelta>& Deltas);
+	static void ApplyChangesToMorphTarget(USkeletalMesh* Mesh, const UE::Geometry::FDynamicMesh3& DynamicMesh, FString MorphTargetName, const UE::Geometry::FDynamicMesh3& Original, const UE::Geometry::FDynamicMesh3& Changed);
 	static void RenameMorphTargetInImportData(USkeletalMesh* Mesh, FString NewName, FString OriginalName, bool bInvalidateRenderData = true);
 	static void RemoveMorphTargetsFromImportData(USkeletalMesh* Mesh, const TArray<FString>& MorphTargets, bool bInvalidateRenderData = true);
 	static void ApplyMorphTargetToImportData(USkeletalMesh* Mesh, FString MorphTargetName, const TArray<FMorphTargetDelta>& Deltas, bool bInvalidateRenderData = true);
@@ -83,10 +86,10 @@ public:
 	static bool MergeMorphTargets(USkeletalMesh* SkeletalMesh, const TArray<FString>& MorphTargets, TArray<FMorphTargetDelta>& OutDeltas);
 	static bool InvertMorphTarget(USkeletalMesh* SkeletalMesh, const FString& MorphTarget, TArray<FMorphTargetDelta>& OutDeltas);
 	static bool CopyMorphTarget(USkeletalMesh* SkeletalMesh, const TArray<FString>& MorphTargets, USkeletalMesh* TargetSkeletalMesh, TArray<TArray<FMorphTargetDelta>>& OutDeltas, float Threshold = 20.f, float Multiplier = 1.f, int32 SmoothIterations = 0, float SmoothStrength = 0.8f);
-	static void ApplySourceDeltasToDynamicMesh(const FDynamicMesh3& SourceDynamicMesh, const FDynamicMesh3& DynamicMesh, const TArray<FMorphTargetDelta>& SourceDeltas, TArray<FMorphTargetDelta>& OutDeltas, float Threshold = 1.f, float Multiplier = 1.f, int32 SmoothIterations = 0, float SmoothStrength = 1.0f, bool bCheckIdentical = true);
+	static void ApplySourceDeltasToDynamicMesh(const UE::Geometry::FDynamicMesh3& SourceDynamicMesh, const UE::Geometry::FDynamicMesh3& DynamicMesh, const TArray<FMorphTargetDelta>& SourceDeltas, TArray<FMorphTargetDelta>& OutDeltas, float Threshold = 1.f, float Multiplier = 1.f, int32 SmoothIterations = 0, float SmoothStrength = 1.0f, bool bCheckIdentical = true);
 	static bool ImportMorphTarget(USkeletalMesh* SkeletalMesh, const TArray<UBAMorphTarget*>& MorphTargets, USkeletalMesh* TargetSkeletalMesh, TArray<TArray<FMorphTargetDelta>>& OutDeltas, float Threshold = 20.f, float Multiplier = 1.f, int32 SmoothIterations = 0, float SmoothStrength = 0.8f);
-	static bool CreateMorphTargetFromPose(USkeletalMesh* SkeletalMesh, const FDynamicMesh3& PoseDynamicMesh, TArray<FMorphTargetDelta>& OutDeltas);
+	static bool CreateMorphTargetFromPose(USkeletalMesh* SkeletalMesh, const UE::Geometry::FDynamicMesh3& PoseDynamicMesh, TArray<FMorphTargetDelta>& OutDeltas);
 	static bool CreateMorphTargetFromMesh(USkeletalMesh* SkeletalMesh, USkeletalMesh* SourceSkeletalMesh, TArray<FMorphTargetDelta>& OutDeltas, float Threshold = 20.f, float Multiplier = 1.f, int32 SmoothIterations = 0, float SmoothStrength = 0.8f);
-	static void ReadObj(const FString& Path, FDynamicMesh3& Mesh, bool bYUp = false);
+	static void ReadObj(const FString& Path, UE::Geometry::FDynamicMesh3& Mesh, bool bYUp = false);
 	static bool CreateMorphTargetFromObj(USkeletalMesh* SkeletalMesh, const FFilePath& BaseObjPath, const FFilePath& MorphedObjPath, TArray<FMorphTargetDelta>& OutDeltas, float Threshold = 1.f, float Multiplier = 1.f, int32 SmoothIterations = 0, float SmoothStrength = 1.0f, bool bYUp = false);
 };

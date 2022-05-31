@@ -12,7 +12,7 @@
 #include "Rendering/SkeletalMeshRenderData.h"
 #include "CharacterCreationEditorLog.h"
 #include "Animation/Skeleton.h"
-#include "DynamicMesh3.h"
+#include "DynamicMesh/DynamicMesh3.h"
 #include "CharacterCreationSettings.h"
 #include "MeshEdittingLibrary.h"
 #include "Rendering/SkeletalMeshLODModel.h"
@@ -39,34 +39,34 @@ void LoadImportDataHelper
 
 	// if lod 0 has been reduced its a special case
 	// we need to modify the original mesh data and then rebuild the lods
-	if (
-		OutbIsLod0Reduced
-		&& OutImportedModel->OriginalReductionSourceMeshData.Num()
-		&& !OutImportedModel->OriginalReductionSourceMeshData[0]->IsEmpty()
-		)
-	{
-		OutImportedModel->OriginalReductionSourceMeshData[0]->LoadReductionData(*OutLod0Model, OutReductionLODMorphTargetData, Mesh);
-		OutLoadedReductionData = true;
-	}
-	else
-	{
-		OutLoadedReductionData = false;
-	}
+	//if (
+	//	OutbIsLod0Reduced
+	//	&& OutImportedModel->OriginalReductionSourceMeshData_DEPRECATED.Num()
+	//	&& !OutImportedModel->OriginalReductionSourceMeshData_DEPRECATED[0]->IsEmpty()
+	//	)
+	//{
+	//	OutImportedModel->OriginalReductionSourceMeshData_DEPRECATED[0]->LoadReductionData(*OutLod0Model, OutReductionLODMorphTargetData, Mesh);
+	//	OutLoadedReductionData = true;
+	//}
+	//else
+	//{
+	//	OutLoadedReductionData = false;
+	//}
 
 
-	//handle legacy assets imported before current engine version, not sure if this is needed
-	if (
-		!OutLod0Model->bIsBuildDataAvailable &&
-		!OutLod0Model->bIsRawSkeletalMeshBulkDataEmpty &&
-		!OutLod0Model->RawSkeletalMeshBulkData_DEPRECATED.IsEmpty()
-		)
-	{
-		OutLod0Model->RawSkeletalMeshBulkData_DEPRECATED.LoadRawMesh(OutData);
-	}
-	else if (OutLod0Model->bIsBuildDataAvailable)
-	{
-		Mesh->LoadLODImportedData(0, OutData);
-	}
+	////handle legacy assets imported before current engine version, not sure if this is needed
+	//if (
+	//	!OutLod0Model->bIsBuildDataAvailable &&
+	//	!OutLod0Model->bIsRawSkeletalMeshBulkDataEmpty &&
+	//	!OutLod0Model->RawSkeletalMeshBulkData_DEPRECATED.IsEmpty()
+	//	)
+	//{
+	//	OutLod0Model->RawSkeletalMeshBulkData_DEPRECATED.LoadRawMesh(OutData);
+	//}
+	//else if (OutLod0Model->bIsBuildDataAvailable)
+	//{
+	//	Mesh->LoadLODImportedData(0, OutData);
+	//}
 }
 
 void BakeVertices(
@@ -97,12 +97,12 @@ void BakeVertices(
 	TArray<FVector> RawPositions;
 	for (int32 VertIndex = 0; VertIndex < PosedVertexPositions.Num(); ++VertIndex)
 	{
-		RawPositions.Add(ComponentToWorld.TransformPosition(PosedVertexPositions[VertIndex].Position));
+		//RawPositions.Add(ComponentToWorld.TransformPosition(PosedVertexPositions[VertIndex].Position));
 	}
 	for (int32 RenderVertIndex = 0; RenderVertIndex < RawPositions.Num(); RenderVertIndex++)
 	{
 		int32 ImportVertIdx = ImportedModelLod0->MeshToImportVertexMap[RenderVertIndex];
-		RawLod0ImportDataMesh.Points[ImportVertIdx] = RawPositions[RenderVertIndex];
+		//RawLod0ImportDataMesh.Points[ImportVertIdx] = RawPositions[RenderVertIndex];
 	}
 
 	//save LOD import data, and make new guid to force DDC re-creation
@@ -524,7 +524,7 @@ void UCharacterCreationEditorLibrary::CopyBonesLocation(UDebugSkelMeshComponent*
 	//			{
 	//				if (ImportedModel->LODModels.IsValidIndex(LODIndex))
 	//				{
-	//					FDynamicMesh3 DynamicMesh;
+	//					UE::Geometry::FDynamicMesh3 DynamicMesh;
 	//					UMeshEdittingLibrary::SkeletalMeshToDynamicMesh(EdittingSkeletalMesh, DynamicMesh, NULL, TArray<FFinalSkinVertex>(), LODIndex);
 
 	//					FSkeletalMeshLODModel& LODModel = ImportedModel->LODModels[LODIndex];

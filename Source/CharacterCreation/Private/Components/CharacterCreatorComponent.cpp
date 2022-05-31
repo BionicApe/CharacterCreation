@@ -75,7 +75,7 @@ void UCharacterCreatorComponent::SetCharacterCreator(UCharacterCreator* NewChara
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));	
 	}
 
 	CharacterCreator = NewCharacterCreator;
@@ -92,7 +92,6 @@ void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 	{
 		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
 	}
-
 
 	USkeletalMeshComponent* SkComp = SlotMeshMap.FindRef(Outfit->Slot);
 	if (!SkComp)

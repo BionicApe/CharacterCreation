@@ -77,13 +77,20 @@ void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementati
 		return;
 	}
 
-	UCharacterCreationSubsystem const* const CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
-	if (ICharacterCreationDAO* const DAO = CCSubsystem->GetDao())
+	/*if (ICharacterCreationDAO::DaoInstance)
 	{
 		FAsyncSaveCharacterCreatorDelegate Delegate;
-		//Delegate.BindUObject(this, &UCharacterCreatorControlComponent::OnDaoResponse);
-		DAO->SaveCharacterCreator(CharacterCreator, Delegate);
-	}
+		ICharacterCreationDAO::DaoInstance->SaveCharacterCreator(CharacterCreator, Delegate);
+	}*/
+
+
+	//UCharacterCreationSubsystem const* const CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
+	//if (ICharacterCreationDAO* const DAO = CCSubsystem->GetDao())
+	//{
+	//	FAsyncSaveCharacterCreatorDelegate Delegate;
+	//	//Delegate.BindUObject(this, &UCharacterCreatorControlComponent::OnDaoResponse);
+	//	DAO->SaveCharacterCreator(CharacterCreator, Delegate);
+	//}
 }
 
 void UCharacterCreatorControlComponent::OnDaoResponse(FAsyncCharacterCreatorResponse Response)

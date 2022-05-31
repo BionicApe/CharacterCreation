@@ -34,7 +34,7 @@ protected:
 
 public:
 
-	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadOnly, Category = "CharacterCreator")
+	UPROPERTY(Transient, VisibleAnywhere, BlueprintReadWrite, Category = "CharacterCreator")
 	USkeletalMeshComponent* RootSkeletalMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CharacterCreator")

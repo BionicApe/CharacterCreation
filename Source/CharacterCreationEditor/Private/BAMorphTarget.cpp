@@ -144,7 +144,7 @@ void UBAMorphTarget::Serialize(FArchive& Ar)
 	FStripDataFlags StripFlags(Ar);
 	if (!StripFlags.IsDataStrippedForServer())
 	{
-		Ar << MorphLODModels;
+		//Ar << MorphLODModels;//TODO:Fix this, new version doesn't have operator<<
 	}
 }
 

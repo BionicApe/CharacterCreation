@@ -34,7 +34,9 @@ public class CharacterCreationEditor : ModuleRules
 				"SlateCore",
                 "UnrealEd",
                 "CharacterCreation",
-				"Persona",
+				"GeometryCore",
+                "GeometryFramework",
+                "Persona",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
