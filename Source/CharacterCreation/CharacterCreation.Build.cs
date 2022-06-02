@@ -39,6 +39,7 @@ public class CharacterCreation : ModuleRules
 				"CoreUObject",
 				"Slate",
 				"SlateCore",
+				"Json",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

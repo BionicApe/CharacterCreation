@@ -49,10 +49,6 @@ class ICharacterCreationDAO
 
 public:
 
-	//static ICharacterCreationDAO* DaoInstance;
-
-public:
-
 	virtual void SaveCharacterCreator(UCharacterCreator* CharacterCreator, FAsyncSaveCharacterCreatorDelegate Delegate) = 0;
 
 	virtual void LoadCharacterCreator(int32 Id, FAsyncLoadCharacterCreatorDelegate Delegate) = 0;
@@ -86,5 +82,4 @@ public:
 	virtual ICharacterCreationDAO* GetCharacterCreationDAO() const = 0;
 	virtual void SetCharacterCreationDAO(ICharacterCreationDAO* Dao) = 0;
 };
-
 #pragma endregion

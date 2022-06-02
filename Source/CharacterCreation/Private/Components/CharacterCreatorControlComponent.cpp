@@ -76,21 +76,21 @@ void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementati
 		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() World is null or GameInstance is null"));
 		return;
 	}
+	
+	const ICharacterCreationDAOOwner* const DaoOwner = Cast<ICharacterCreationDAOOwner>(GetWorld()->GetGameInstance());
+	if (!DaoOwner)
+	{
+		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() GameInstance is not ICharacterCreationDAOOwner"));
+		return;
+	}
 
-	/*if (ICharacterCreationDAO::DaoInstance)
+	ICharacterCreationDAO* Dao = DaoOwner->GetCharacterCreationDAO();
+	if (Dao)
 	{
 		FAsyncSaveCharacterCreatorDelegate Delegate;
-		ICharacterCreationDAO::DaoInstance->SaveCharacterCreator(CharacterCreator, Delegate);
-	}*/
-
-
-	//UCharacterCreationSubsystem const* const CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
-	//if (ICharacterCreationDAO* const DAO = CCSubsystem->GetDao())
-	//{
-	//	FAsyncSaveCharacterCreatorDelegate Delegate;
-	//	//Delegate.BindUObject(this, &UCharacterCreatorControlComponent::OnDaoResponse);
-	//	DAO->SaveCharacterCreator(CharacterCreator, Delegate);
-	//}
+		//Delegate.BindUObject(this, &UCharacterCreatorControlComponent::OnDaoResponse);
+		Dao->SaveCharacterCreator(CharacterCreator, Delegate);
+	}
 }
 
 void UCharacterCreatorControlComponent::OnDaoResponse(FAsyncCharacterCreatorResponse Response)

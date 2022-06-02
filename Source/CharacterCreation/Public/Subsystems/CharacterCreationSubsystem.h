@@ -9,8 +9,6 @@
 
 class ICharacterCreationDAO;
 
-DECLARE_LOG_CATEGORY_EXTERN(CharacterCreationLog, Warning, All);
-
 /**
  *
  */

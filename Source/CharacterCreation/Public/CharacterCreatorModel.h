@@ -35,12 +35,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	TArray<UCharacterCreatorOutfitSlot*> Slots;
 
-	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	TMap<FString, UCharacterCreatorOutfitSlot*> SlotsMap;
+	bool ContainsSlot(const FString& SlotID);
 
-	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	TMap<FString, UCharacterCreatorOutfit*> OutfitsMap;
+	UCharacterCreatorOutfitSlot* GetSlot(const FString& SlotID);
 
-	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
-	TMap<int32, UCharacterCreatorOutfit*> Outfits;
+	//UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	//TMap<FString, UCharacterCreatorOutfitSlot*> SlotsMap;
+
+	//UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	//TMap<FString, UCharacterCreatorOutfit*> OutfitsMap;
+
+	//UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	//TMap<int32, UCharacterCreatorOutfit*> Outfits;
 };
