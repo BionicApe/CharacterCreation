@@ -3,6 +3,14 @@
 
 #include "CharacterCreatorModel.h"
 
+bool UCharacterCreatorModel::ContainsSlot(const UCharacterCreatorOutfitSlot* FindSlot)
+{
+	if (Slots.IsEmpty()) {
+		return false;
+	}
+	return Slots.Contains(FindSlot);
+}
+
 bool UCharacterCreatorModel::ContainsSlot(const FString& SlotID)
 {
 	//TODO think of something better

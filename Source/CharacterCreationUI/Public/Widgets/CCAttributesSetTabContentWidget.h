@@ -7,6 +7,7 @@
 #include "CCAttributesSetTabContentWidget.generated.h"
 
 class UCharacterCreatorAttributesSet;
+class UCharacterCreatorMatAttributesSet;
 class UCharacterCreator;
 class UListView;
 class UCharacterCreatorAttributeDH;
@@ -32,11 +33,11 @@ public:
 	UCharacterCreator* CharacterCreator;
 
 	UPROPERTY()
-	TArray<UCharacterCreatorAttributeDH*> DataHolderArray;
+	TArray<UCharacterCreatorAttributeDH*> AttributesDataHolderArray;
 
 public:
 	
 	virtual bool Initialize() override;
 
-	virtual void SetAttributesSet(UCharacterCreatorAttributesSet* NewAttributesSet, UCharacterCreator* NewCharacterCrator);
+	virtual void SetAttributesSet(UCharacterCreatorAttributesSet* NewAttributesSet, UCharacterCreator* NewCharacterCreator);
 };

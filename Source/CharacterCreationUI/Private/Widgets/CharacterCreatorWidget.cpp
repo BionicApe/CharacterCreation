@@ -3,6 +3,7 @@
 
 #include "Widgets/CharacterCreatorWidget.h"
 #include "CharacterCreatorAttributesSet.h"
+#include "CharacterCreatorMatAttributeSet.h"
 #include "CharacterCreator.h"
 #include "Components/HorizontalBox.h"
 #include "Components/Button.h"
@@ -10,12 +11,18 @@
 #include "Components/TextBlock.h"
 #include "Widgets/CCAttributesSetTabWidget.h"
 #include "Components/WidgetSwitcher.h"
-#include "Widgets/CCAttributesSetTabContentWidget.h"
+#include "Widgets/CCMatAttSetTabContentWidget.h"
 #include "Widgets/CCOutfitWidget.h"
+#include "Widgets/CCGroomWidget.h"
 #include "CharacterCreatorOutfitsSet.h"
 #include "CharacterCreatorModel.h"
 #include "Components/CharacterCreatorComponent.h"
 #include "Components/CharacterCreatorControlComponent.h"
+
+
+//FOR DEBUG ONLY
+#include "Kismet/KismetSystemLibrary.h"
+
 
 
 bool UCharacterCreatorWidget::Initialize()
@@ -52,8 +59,9 @@ void UCharacterCreatorWidget::ReloadFromCharacterCreator()
 	AttributesSetSwitcher->ClearChildren();
 	AttributesTabs->ClearChildren();
 
-	if (CharacterCreatorModel && CharacterCreator && TabContentWidgetClass && TabButtonsWidgetClass && OutfitWidgetClass)
+	if (CharacterCreatorModel && CharacterCreator && TabContentWidgetClass && TabButtonsWidgetClass && OutfitWidgetClass && GroomWidgetClass)
 	{
+		//Create content for Attributes
 		for (UCharacterCreatorAttributesSet* AttributesSet : CharacterCreatorModel->AttributesSets)
 		{
 			//Create the content
@@ -73,6 +81,26 @@ void UCharacterCreatorWidget::ReloadFromCharacterCreator()
 			}
 		}
 
+		//Create content for Material attributes
+		for (UCharacterCreatorMatAttributesSet* MaterialAttributesSet : CharacterCreatorModel->MaterialAttributesSets)
+		{
+			//Create the content
+			if (UCCMatAttSetTabContentWidget* TabContentWidget = CreateWidget<UCCMatAttSetTabContentWidget>(GetWorld(), MaterialAttributeTabContentWidgetClass))
+			{
+
+				TabContentWidget->SetMaterialAttributesSet(MaterialAttributesSet, CharacterCreator);
+
+				//Add Content to the Switcher
+				UPanelSlot* SwitcherSlot = AttributesSetSwitcher->AddChild(TabContentWidget);
+
+				//Create Button for the tab
+				if (UCCAttributesSetTabWidget* TabWidget = CreateWidget<UCCAttributesSetTabWidget>(GetWorld(), TabButtonsWidgetClass))
+				{
+					CreateTab(FText::FromString(MaterialAttributesSet->AttributesSetName), TabWidget, TabContentWidget);
+				}
+			}
+		}
+
 		//Create the content for the Outfits
 		if (UCCOutfitWidget* TabContentWidget = CreateWidget<UCCOutfitWidget>(GetWorld(), OutfitWidgetClass))
 		{
@@ -88,11 +116,40 @@ void UCharacterCreatorWidget::ReloadFromCharacterCreator()
 				CreateTab(FText::FromString("Outfit"), TabWidget, TabContentWidget);
 			}
 		}
+
+		//Create the content for the Grooms
+		if (UCCGroomWidget* TabContentWidget = CreateWidget<UCCGroomWidget>(GetWorld(), GroomWidgetClass))
+		{
+
+			TabContentWidget->SetGrooms(CharacterCreatorModel->GroomSets, CharacterCreator);
+
+			//Add Content to the Switcher
+			UPanelSlot* SwitcherSlot = AttributesSetSwitcher->AddChild(TabContentWidget);
+
+			//Create Button for the tab
+			if (UCCAttributesSetTabWidget* TabWidget = CreateWidget<UCCAttributesSetTabWidget>(GetWorld(), TabButtonsWidgetClass))
+			{
+				CreateTab(FText::FromString("Groom"), TabWidget, TabContentWidget);
+			}
+		}
+
+		//Create the content for the body shape
+		if (UCCBodyWidget* TabContentWidget = CreateWidget<UCCBodyWidget>(GetWorld(), BodyWidgetClass)) 
+		{
+			TabContentWidget->SetCharacterCreator(CharacterCreator);
+
+			//Add Content to the Switcher
+			UPanelSlot* SwitcherSlot = AttributesSetSwitcher->AddChild(TabContentWidget);
+
+
+			//Create Button for the tab
+			if (UCCAttributesSetTabWidget* TabWidget = CreateWidget<UCCAttributesSetTabWidget>(GetWorld(), TabButtonsWidgetClass))
+			{
+				CreateTab(FText::FromString("Body"), TabWidget, TabContentWidget);
+			}
+		}
 	}
 }
-
-
-
 
 void UCharacterCreatorWidget::OnTabSelected(UCCAttributesSetTabWidget* SelectedTabWidget, UWidget* SelectedContentWidget)
 {

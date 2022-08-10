@@ -3,10 +3,13 @@
 
 #include "Widgets/CCAttributeListEntryWidget.h"
 #include "CharacterCreatorAttribute.h"
+#include "CharacterCreatorMatAttribute.h"
 #include "Components/TextBlock.h"
 #include "Internationalization/Text.h"
 #include "Components/Slider.h"
+#include "Components/ListView.h"
 #include "DataHelper/CharacterCreatorAttributeDH.h"
+#include "DataHelper/CharacterCreatorSlotDH.h"
 #include "CharacterCreator.h"
 #include "Components/CharacterCreatorControlComponent.h"
 
@@ -39,6 +42,9 @@ void UCCAttributeListEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObj
 	MorphSlider->SetValue(CCAttributeDH->Value);
 	MorphSlider->SetMaxValue(CCAttributeDH->CharacterCreatorAttribute->MorphMax);
 	MorphSlider->SetMinValue(CCAttributeDH->CharacterCreatorAttribute->MorphMin);
+
+	SlotsDataHolderArray.Empty();
+
 }
 
 void UCCAttributeListEntryWidget::OnValueChanged(float NewValue)
@@ -50,8 +56,6 @@ void UCCAttributeListEntryWidget::OnValueChanged(float NewValue)
 		UE_LOG(LogTemp, Error, TEXT("UCCAttributeListEntryWidget::OnValueChanged() CCAttribute empty"));
 		return;
 	}
-
-	//CCAttributeDH->CharacterCreator->SetAttributeValue(CCAttributeDH->CharacterCreatorAttribute, NewValue);//
 
 	if (APlayerController* PC = GetOwningPlayer())
 	{

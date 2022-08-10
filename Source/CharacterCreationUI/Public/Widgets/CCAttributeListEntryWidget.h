@@ -9,7 +9,10 @@
 
 class UTextBlock;
 class UCharacterCreatorAttributeDH;
+class UCharacterCreatorSlotDH;
 class USlider;
+class UCheckBox;
+class UListView;
 
 /**
  * 
@@ -33,8 +36,15 @@ protected:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MorphMaxTextWidget;
 
+	UPROPERTY(meta = (BindWidget))
+	UListView* PermitedSlotsListView;
+
 	UPROPERTY()
 	UCharacterCreatorAttributeDH* CCAttributeDH;
+
+	//Might not be the best place to handle permitedslot creation
+	UPROPERTY()
+	TArray<UCharacterCreatorSlotDH*> SlotsDataHolderArray;
 
 public:
 

@@ -11,9 +11,14 @@ class UCharacterCreatorAttributesSet;
 class UCharacterCreatorAttribute;
 class UCharacterCreatorOutfit;
 class UCharacterCreatorOutfitSlot;
+class UCharacterCreatorGroom;
+class UCharacterCreatorModel;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterCreatorOutfitChanged, UCharacterCreatorOutfit*, Outfit);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterCreatorGroomChanged, UCharacterCreatorGroom*, Groom);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterCreatorBodyTypeChanged, FCharacterCreationBodyType, NewBodyType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCharacterCreatorAttributeChanged, UCharacterCreatorAttribute*, Attribute, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCharacterCreatorMaterialAttributeChanged, UCharacterCreatorMatAttribute*, MaterialAttribute, float, Value);
 
 /**
  *
@@ -35,13 +40,34 @@ public:
 	TArray<FCCSlotAndOutfit> SlotAndOutfitArray;
 
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	TArray<FCCSlotAndGroom> SlotAndGroomArray;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
 	TArray<FCCAttributeValue> AttributeValues;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	TArray<FCCMaterialAttributeValue> MaterialAttributeValues;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	FCharacterCreationBodyType BodyType;
+
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	UCharacterCreatorModel* Model;
 
 	UPROPERTY(Transient)
 	FOnCharacterCreatorOutfitChanged OnOutfitChangedDelegate;
 
 	UPROPERTY(Transient)
+	FOnCharacterCreatorGroomChanged OnGroomChangedDelegate;
+
+	UPROPERTY(Transient)
 	FOnCharacterCreatorAttributeChanged OnAttributeChangedDelegate;
+
+	UPROPERTY(Transient)
+	FOnCharacterCreatorMaterialAttributeChanged OnMaterialAttributeChangedDelegate;
+
+	UPROPERTY(Transient)
+	FOnCharacterCreatorBodyTypeChanged OnBodyTypeChangedDelegate;
 
 public:
 
@@ -59,14 +85,39 @@ public:
 	//End Functions Needed to replicate, from UObject
 
 	float ValueOf(UCharacterCreatorAttribute* CCAttribute);
+	
+	//Quick fix for material attribute testing, TODO:Interface/Hierarchy the attributes so they share types
+	float ValueOf(UCharacterCreatorMatAttribute* CCAttribute);
+
+	TArray<UCharacterCreatorOutfitSlot*> AffectedSlotsOf(UCharacterCreatorMatAttribute* CCAttribute);
+
 	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_AttributeChanged(UCharacterCreatorAttribute* Attribute, float NewValue);
+
+	//Quick fix for material attribute testing, TODO:Interface/Hierarchy the attributes so they share types
+	void SetMaterialAttributeValue(UCharacterCreatorMatAttribute* Attribute, float NewValue);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_MaterialAttributeChanged(UCharacterCreatorMatAttribute* Attribute, float NewValue);
+
+	void SetMaterialAttributeAffectedSlots(UCharacterCreatorMatAttribute* CCAttribute, UCharacterCreatorOutfitSlot* Slot, bool NewValue);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_MaterialAttributeAffectedSlotChanged(UCharacterCreatorMatAttribute* CCAttribute, UCharacterCreatorOutfitSlot* Slot, bool NewValue);
 
 	UCharacterCreatorOutfit* GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot);
 	void SetOutfit(UCharacterCreatorOutfit* Outfit);
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_OutfitChanged(UCharacterCreatorOutfit* Outfit);
+
+	UCharacterCreatorGroom* GetSelectedGroom(UCharacterCreatorOutfitSlot* OutfitSlot);
+	void SetGroom(UCharacterCreatorGroom* Groom);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_GroomChanged(UCharacterCreatorGroom* Groom);
+
+	FCharacterCreationBodyType GetSelectedBodyType();
+	void SetBodyType(FCharacterCreationBodyType NewBodyType);
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_BodyTypeChanged(FCharacterCreationBodyType NewBodyType);
 
 	// Overrides
 	/*

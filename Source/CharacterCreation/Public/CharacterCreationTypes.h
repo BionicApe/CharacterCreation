@@ -12,7 +12,9 @@ class USkeletalMeshComponent;
 class USkeletalMesh;
 class UCharacterCreatorOutfitSlot;
 class UCharacterCreatorOutfit;
+class UCharacterCreatorGroom;
 class UCharacterCreatorAttribute;
+class UCharacterCreatorMatAttribute;
 
 
 
@@ -30,6 +32,22 @@ struct CHARACTERCREATION_API FCCSlotAndOutfit
 	FCCSlotAndOutfit() : Slot(nullptr), Outfit(nullptr) {}
 
 	FCCSlotAndOutfit(UCharacterCreatorOutfitSlot* NewSlot, UCharacterCreatorOutfit* NewValue) : Slot(NewSlot), Outfit(NewValue) {}
+};
+
+USTRUCT(BlueprintType)
+struct CHARACTERCREATION_API FCCSlotAndGroom
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	UCharacterCreatorOutfitSlot* Slot;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	UCharacterCreatorGroom* Groom;
+
+	FCCSlotAndGroom() : Slot(nullptr), Groom(nullptr) {}
+
+	FCCSlotAndGroom(UCharacterCreatorOutfitSlot* NewSlot, UCharacterCreatorGroom* NewValue) : Slot(NewSlot), Groom(NewValue) {}
 };
 
 USTRUCT(BlueprintType)
@@ -66,6 +84,28 @@ struct CHARACTERCREATION_API FCCAttributeValue
 	FCCAttributeValue() :Attribute(nullptr), Value(0.f) {}
 
 	FCCAttributeValue(UCharacterCreatorAttribute* NewAttribute, float NewValue) :Attribute(NewAttribute), Value(NewValue) {}
+};
+
+USTRUCT(BlueprintType)
+struct CHARACTERCREATION_API FCCMaterialAttributeValue
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	UCharacterCreatorMatAttribute* MaterialAttribute;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	float Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CharacterCreator)
+	TArray<UCharacterCreatorOutfitSlot*> AffectedSlots;
+
+	//FCCMaterialAttributeValue() :MaterialAttribute(nullptr), Value(0.f){}
+	FCCMaterialAttributeValue() :MaterialAttribute(nullptr), Value(0.f), AffectedSlots(){}
+
+	//Legacy, migth dissapear
+	FCCMaterialAttributeValue(UCharacterCreatorMatAttribute* NewAttribute, float NewValue) :MaterialAttribute(NewAttribute), Value(NewValue){}
+	FCCMaterialAttributeValue(UCharacterCreatorMatAttribute* NewAttribute, float NewValue, TArray<UCharacterCreatorOutfitSlot*> NewAffectedSlots) :MaterialAttribute(NewAttribute), Value(NewValue), AffectedSlots(NewAffectedSlots){}
 };
 
 
@@ -245,4 +285,13 @@ struct CHARACTERCREATION_API FCharacterCreationMesh : public FTableRowBase
 		MeshId = 0;
 		Mesh = nullptr;
 	}
+};
+
+UENUM(BlueprintType)
+enum class FCharacterCreationBodyType : uint8
+{
+	NormalWeight = 0,
+	OverWeight,
+	UnderWeight,
+	MAX
 };

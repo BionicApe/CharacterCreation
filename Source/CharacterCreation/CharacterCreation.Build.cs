@@ -40,6 +40,8 @@ public class CharacterCreation : ModuleRules
 				"Slate",
 				"SlateCore",
 				"Json",
+				"HairStrandsCore",
+				//"CharacterCreationUI",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

@@ -3,8 +3,12 @@
 
 #include "Widgets/CCAttributesSetTabContentWidget.h"
 #include "CharacterCreatorAttributesSet.h"
+#include "CharacterCreatorMatAttributeSet.h"
+#include "CharacterCreatorMatAttribute.h"
+#include "CharacterCreatorOutfitSlot.h"
 #include "Components/ListView.h"
 #include "DataHelper/CharacterCreatorAttributeDH.h"
+#include "DataHelper/CharacterCreatorSlotDH.h"
 #include <CharacterCreator.h>
 
 bool UCCAttributesSetTabContentWidget::Initialize()
@@ -22,7 +26,7 @@ void UCCAttributesSetTabContentWidget::SetAttributesSet(UCharacterCreatorAttribu
 	AttributesSet = NewAttributesSet;
 	CharacterCreator = NewCharacterCreator;
 
-	DataHolderArray.Empty();
+	AttributesDataHolderArray.Empty();
 
 	if (AttributesSet && AttributeListView && CharacterCreator)
 	{
@@ -32,9 +36,9 @@ void UCCAttributesSetTabContentWidget::SetAttributesSet(UCharacterCreatorAttribu
 			DataHolder->CharacterCreator = CharacterCreator;
 			DataHolder->CharacterCreatorAttribute = CCAttribute;
 			DataHolder->Value = CharacterCreator->ValueOf(CCAttribute);
-			DataHolderArray.Add(DataHolder);
+			AttributesDataHolderArray.Add(DataHolder);
 		}
 
-		AttributeListView->SetListItems(DataHolderArray);
+		AttributeListView->SetListItems(AttributesDataHolderArray);
 	}
 }

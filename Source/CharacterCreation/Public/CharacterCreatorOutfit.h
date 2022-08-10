@@ -30,7 +30,7 @@ public:
 	UCharacterCreatorOutfitSlot* Slot;
 
 	UPROPERTY(EditInstanceOnly)
-	USkeletalMesh* Mesh;
+	TArray<USkeletalMesh*> Meshes;
 
 	UPROPERTY(EditInstanceOnly)
 	int32 DatabaseId;

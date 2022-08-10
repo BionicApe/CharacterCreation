@@ -10,6 +10,7 @@
 
 class UCharacterCreator;
 class USkeletalMeshComponent;
+class UGroomComponent;
 
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent), Blueprintable)
@@ -30,7 +31,14 @@ protected:
 	UCharacterCreator* CharacterCreatorLastUsed;
 
 	UPROPERTY(Transient)
-	TMap<UCharacterCreatorOutfitSlot*,USkeletalMeshComponent*> SlotMeshMap;
+	TMap<UCharacterCreatorOutfitSlot*, USkeletalMeshComponent*> SlotSKMeshMap;
+
+	UPROPERTY(Transient)
+	TMap<UCharacterCreatorOutfitSlot*, UGroomComponent*> SlotGroomMap;
+
+	//Slot mesh map contains duplicated data as it is a concatenation of slots and grooms used to share material attributes
+	UPROPERTY(Transient)
+	TMap<UCharacterCreatorOutfitSlot*, UMeshComponent*> SlotMeshMap;
 
 public:
 
@@ -85,6 +93,9 @@ public:
 	void SetOutfit(UCharacterCreatorOutfit* NewOutfit);
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
+	void SetGroom(UCharacterCreatorGroom* NewGroom);
+
+	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
 	bool LoadCharacterCreatorFromDatabase();
 
 	UFUNCTION(BlueprintCallable, Category = "CharacterCreator")
@@ -104,7 +115,16 @@ public:
 	
 	UFUNCTION()
 	void OnOutfitChangedReceived(UCharacterCreatorOutfit* Outfit);
+
+	UFUNCTION()
+	void OnGroomChangedReceived(UCharacterCreatorGroom* Groom);
 	
 	UFUNCTION()
 	void OnAttributeChangedReceived(UCharacterCreatorAttribute* Attribute, float Value);
+
+	UFUNCTION()
+	void OnMaterialAttributeChangedReceived(UCharacterCreatorMatAttribute* MaterialAttribute, float Value);
+
+	UFUNCTION()
+	void OnBodyTypeChangedReceived(FCharacterCreationBodyType NewBodyType);
 };

@@ -6,8 +6,17 @@
 #include "AssetToolsModule.h"
 
 #include "TypeActions/CharacterCreatorTypeActions.h"
+
 #include "TypeActions/CharacterCreatorAttributeTypeActions.h"
 #include "TypeActions/CharacterCreatorAttributesSetTypeActions.h"
+
+#include "TypeActions/CharacterCreatorMatAttributeTypeActions.h"
+#include "TypeActions/CharacterCreatorMatAttributesSetTypeActions.h"
+
+#include "TypeActions/CharacterCreatorGroomTypeActions.h"
+#include "TypeActions/CharacterCreatorGroomsSetTypeActions.h"
+//#include "TypeActions/CharacterCreatorGroomSlotTypeActions.h"
+
 #include "TypeActions/CharacterCreatorOutfitsSetTypeActions.h"
 #include "TypeActions/CharacterCreatorOutfitTypeActions.h"
 #include "TypeActions/CharacterCreatorOutfitSlotTypeActions.h"
@@ -102,13 +111,23 @@ public:
 			AssetCategoryBit = AssetTools.RegisterAdvancedAssetCategory(FName(TEXT("CharacterCreationEditor")), LOCTEXT("CharacterCreationEditor", "Character Creation"));
 
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorTypeActions(AssetCategoryBit)));
+
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorAttributeTypeActions(AssetCategoryBit)));
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorAttributesSetTypeActions(AssetCategoryBit)));
+
+			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorMatAttributeTypeActions(AssetCategoryBit)));
+			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorMatAttributesSetTypeActions(AssetCategoryBit)));
+
+			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorGroomTypeActions(AssetCategoryBit)));
+			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorGroomsSetTypeActions(AssetCategoryBit)));
+			//RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorOutfitSlotTypeActions(AssetCategoryBit)));
+
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorOutfitTypeActions(AssetCategoryBit)));
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorOutfitsSetTypeActions(AssetCategoryBit)));
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorOutfitSlotTypeActions(AssetCategoryBit)));
 			RegisterAssetTypeAction(AssetTools, MakeShareable(new FCharacterCreatorModelTypeActions(AssetCategoryBit)));
 
+			//Publish here asset actions
 		}
 
 		// Register the details customization

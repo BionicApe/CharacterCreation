@@ -77,7 +77,7 @@ void UCCOutfitListEntryWidget::NativeOnListItemObjectSet(UObject* ListItemObject
 
 	if (NameTextWidget && CCOutfitDH->OutfitsSet)
 	{
-		NameTextWidget->SetText(FText::FromName(CCOutfitDH->OutfitsSet->FriendlyName));;
+		NameTextWidget->SetText(FText::FromName(CCOutfitDH->OutfitsSet->FriendlyName));
 	}
 }
 

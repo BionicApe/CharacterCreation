@@ -7,6 +7,7 @@
 #include "CharacterCreatorAttributeDH.generated.h"
 
 class UCharacterCreatorAttribute;
+class UCharacterCreatorMatAttribute;
 
 /**
  *
@@ -23,6 +24,10 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	UCharacterCreatorAttribute* CharacterCreatorAttribute;	
+
+	////Quick fix for material attribute testing, TODO:Interface/Hierarchy the attributes so they share types
+	//UPROPERTY(EditAnywhere)
+	//UCharacterCreatorMatAttribute* CharacterCreatorMaterialAttribute;
 
 	UPROPERTY(EditAnywhere)
 	UCharacterCreator* CharacterCreator;

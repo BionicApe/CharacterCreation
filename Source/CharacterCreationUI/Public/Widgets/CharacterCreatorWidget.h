@@ -15,7 +15,10 @@ class UHorizontalBox;
 class UCCAttributesSetTabWidget;
 class UWidgetSwitcher;
 class UCCAttributesSetTabContentWidget;
+class UCCMatAttSetTabContentWidget;
 class UCCOutfitWidget;
+class UCCGroomWidget;
+class UCCBodyWidget;
 class UCharacterCreatorModel;
 class UButton;
 
@@ -47,11 +50,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Widgets)
 	TSubclassOf<UCCAttributesSetTabWidget> TabButtonsWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = Widgets)
+	UPROPERTY(EditAnywhere, /*EditDefaultsOnly,*/ Category = Widgets)
 	TSubclassOf<UCCOutfitWidget> OutfitWidgetClass;
+
+	UPROPERTY(EditAnywhere, /*EditDefaultsOnly,*/ Category = Widgets)
+	TSubclassOf<UCCGroomWidget> GroomWidgetClass;
+
+	UPROPERTY(EditAnywhere, /*EditDefaultsOnly,*/ Category = Widgets)
+	TSubclassOf<UCCBodyWidget> BodyWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = Widgets)
 	TSubclassOf<UCCAttributesSetTabContentWidget> TabContentWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Widgets)
+	TSubclassOf<UCCMatAttSetTabContentWidget> MaterialAttributeTabContentWidgetClass;
 
 public:
 

@@ -10,9 +10,13 @@
 #include "Net/UnrealNetwork.h"
 #include "Interfaces/CharacterCreationDAO.h"
 #include "CharacterCreatorOutfit.h"
+#include "CharacterCreatorGroom.h"
 #include "CharacterCreatorOutfitSlot.h"
 #include "CharacterCreatorAttribute.h"
+#include "CharacterCreatorMatAttribute.h"
 #include "Engine/ActorChannel.h"
+#include "GroomComponent.h"
+#include "GroomBindingAsset.h"
 
 UCharacterCreatorComponent::UCharacterCreatorComponent()
 {
@@ -27,7 +31,7 @@ UCharacterCreatorComponent::UCharacterCreatorComponent()
 void UCharacterCreatorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
 		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
@@ -75,7 +79,7 @@ void UCharacterCreatorComponent::SetCharacterCreator(UCharacterCreator* NewChara
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));	
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
 	}
 
 	CharacterCreator = NewCharacterCreator;
@@ -93,7 +97,7 @@ void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
 	}
 
-	USkeletalMeshComponent* SkComp = SlotMeshMap.FindRef(Outfit->Slot);
+	USkeletalMeshComponent* SkComp = SlotSKMeshMap.FindRef(Outfit->Slot);
 	if (!SkComp)
 	{
 		if (Outfit->Slot->bIsRoot)
@@ -110,8 +114,51 @@ void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 			SkComp->RegisterComponent();
 		}
 	}
-	SkComp->SetSkeletalMesh(Outfit->Mesh);
+
+	SkComp->SetSkeletalMesh(Outfit->Meshes[(uint8)CharacterCreator->BodyType]);
+	SlotSKMeshMap.Add(Outfit->Slot, SkComp);
 	SlotMeshMap.Add(Outfit->Slot, SkComp);
+}
+
+void UCharacterCreatorComponent::SetGroom(UCharacterCreatorGroom* NewGroom)
+{
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
+	UGroomComponent* GroomComp = SlotGroomMap.FindRef(NewGroom->Slot);
+
+	if (!GroomComp)
+	{
+
+		GroomComp = NewObject<UGroomComponent>(GetOwner());
+		GroomComp->SetWorldTransform(FTransform::Identity);
+		//GroomComp->AttachToComponent(RootSkeletalMesh, FAttachmentTransformRules::KeepRelativeTransform);
+		GroomComp->RegisterComponent();
+	}
+
+	////Bindig test for animation to work with grooms
+	USkeletalMeshComponent* GroomAttachmentSKMeshComponent = Cast<USkeletalMeshComponent>(SlotMeshMap.FindRef(NewGroom->SlotToAttach));
+	
+	if (!GroomAttachmentSKMeshComponent) {
+		return;
+	}
+
+	USkeletalMesh* BindingSlotToAttach = GroomAttachmentSKMeshComponent->SkeletalMesh;
+
+	GroomComp->SetGroomAsset(NewGroom->GroomAsset);
+	GroomComp->AttachToComponent(GroomAttachmentSKMeshComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	NewGroom->Binding->TargetSkeletalMesh = BindingSlotToAttach; //This might change the asset for ALL character, TODO:Test and fix creating a copy of the asset for each character
+	GroomComp->SetBinding(NewGroom->Binding);
+
+	SlotGroomMap.Add(NewGroom->Slot, GroomComp);
+	SlotMeshMap.Add(NewGroom->Slot, GroomComp);
 }
 
 bool UCharacterCreatorComponent::LoadCharacterCreatorFromDatabase()
@@ -221,8 +268,8 @@ void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 
 	if (bAreDifferent)
 	{
-		//Destroy Meshes and empty SlotMeshMap, they aren't valid anymore
-		for (auto SlotMes : SlotMeshMap)
+		//Destroy Meshes and empty SlotSKMeshMap, they aren't valid anymore
+		for (auto SlotMes : SlotSKMeshMap)
 		{
 			if (SlotMes.Key->bIsRoot)
 			{
@@ -234,18 +281,38 @@ void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 			}
 		}
 
+		SlotSKMeshMap.Empty();
+
+		//Destroy Grooms and empty SlotGroomMap, they aren't valid anymore
+		for (auto SlotGroom : SlotGroomMap)
+		{
+			SlotGroom.Value->DestroyComponent(false);
+		}
+
+		SlotGroomMap.Empty();
+
 		SlotMeshMap.Empty();
 
 		if (CharacterCreatorLastUsed)
 		{
 			CharacterCreatorLastUsed->OnOutfitChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
+			CharacterCreatorLastUsed->OnGroomChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnGroomChangedReceived);
+
 			CharacterCreatorLastUsed->OnAttributeChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+			CharacterCreatorLastUsed->OnMaterialAttributeChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnMaterialAttributeChangedReceived);
+
+			CharacterCreatorLastUsed->OnBodyTypeChangedDelegate.RemoveDynamic(this, &UCharacterCreatorComponent::OnBodyTypeChangedReceived);
 		}
 
 		if (CharacterCreator)
 		{
 			CharacterCreator->OnOutfitChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnOutfitChangedReceived);
+			CharacterCreator->OnGroomChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnGroomChangedReceived);
+
 			CharacterCreator->OnAttributeChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnAttributeChangedReceived);
+			CharacterCreator->OnMaterialAttributeChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnMaterialAttributeChangedReceived);
+			
+			CharacterCreator->OnBodyTypeChangedDelegate.AddDynamic(this, &UCharacterCreatorComponent::OnBodyTypeChangedReceived);
 		}
 	}
 
@@ -259,9 +326,34 @@ void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 			SetOutfit(SlotAndOutfit.Outfit);
 		}
 
+		for (const FCCSlotAndGroom& SlotAndGroom : CharacterCreator->SlotAndGroomArray)
+		{
+			SetGroom(SlotAndGroom.Groom);
+		}
+
 		for (const FCCAttributeValue& AttributeValue : CharacterCreator->AttributeValues)
 		{
 			RootSkeletalMesh->SetMorphTarget(AttributeValue.Attribute->MorphName, AttributeValue.Value);
+		}
+
+		//Set material attributes for relevant slots
+		for (const FCCMaterialAttributeValue& AttributeValue : CharacterCreator->MaterialAttributeValues)
+		{
+			UCharacterCreatorOutfitSlot* Slot = AttributeValue.MaterialAttribute->TargetSlot;
+			UMeshComponent* Mesh = SlotMeshMap.FindRef(Slot);
+
+			if (Mesh && AttributeValue.MaterialAttribute)
+			{
+				Mesh->SetScalarParameterValueOnMaterials(AttributeValue.MaterialAttribute->ScalarParameterName, AttributeValue.Value);
+			}
+
+			for (uint8 i = 0; i < AttributeValue.AffectedSlots.Num(); ++i)
+			{
+				Slot = AttributeValue.AffectedSlots[i];
+				Mesh = SlotMeshMap.FindRef(Slot);
+
+				Mesh->SetScalarParameterValueOnMaterials(AttributeValue.MaterialAttribute->ScalarParameterName, AttributeValue.Value);
+			}
 		}
 	}
 }
@@ -277,6 +369,19 @@ void UCharacterCreatorComponent::OnOutfitChangedReceived(UCharacterCreatorOutfit
 		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
 	}
 	SetOutfit(Outfit);
+}
+
+void UCharacterCreatorComponent::OnGroomChangedReceived(UCharacterCreatorGroom* Groom)
+{
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+	SetGroom(Groom);
 }
 
 
@@ -296,3 +401,63 @@ void UCharacterCreatorComponent::OnAttributeChangedReceived(UCharacterCreatorAtt
 		RootSkeletalMesh->SetMorphTarget(Attribute->MorphName, Value);
 	}
 }
+
+void UCharacterCreatorComponent::OnMaterialAttributeChangedReceived(UCharacterCreatorMatAttribute* MaterialAttribute, float Value)
+{
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
+	if (MaterialAttribute)
+	{
+		for (FCCMaterialAttributeValue& AttributeValue : CharacterCreator->MaterialAttributeValues)
+		{
+			if (AttributeValue.MaterialAttribute == MaterialAttribute)
+			{
+				UCharacterCreatorOutfitSlot* Slot = AttributeValue.MaterialAttribute->TargetSlot;
+				UMeshComponent* Mesh = SlotMeshMap.FindRef(Slot);
+
+				if (Mesh)
+				{
+					Mesh->SetScalarParameterValueOnMaterials(MaterialAttribute->ScalarParameterName, Value);
+				}
+
+				for (uint8 i = 0; i < AttributeValue.AffectedSlots.Num(); ++i)
+				{
+					Slot = AttributeValue.AffectedSlots[i];
+					Mesh = SlotMeshMap.FindRef(Slot);
+
+					Mesh->SetScalarParameterValueOnMaterials(MaterialAttribute->ScalarParameterName, Value);
+				}
+
+				break;
+			}
+		}
+
+	}
+}
+
+void UCharacterCreatorComponent::OnBodyTypeChangedReceived(FCharacterCreationBodyType NewBodyType)
+{
+	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+	}
+
+	CharacterCreator->BodyType = NewBodyType;
+	
+	for (const FCCSlotAndOutfit& SlotAndOutfit : CharacterCreator->SlotAndOutfitArray)
+	{
+		SetOutfit(SlotAndOutfit.Outfit);
+	}
+}
+

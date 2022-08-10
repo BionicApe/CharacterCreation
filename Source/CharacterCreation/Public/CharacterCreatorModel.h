@@ -8,7 +8,10 @@
 
 class UCharacterCreatorAttributesSet;
 class UCharacterCreatorAttribute;
+class UCharacterCreatorMatAttributesSet;
+class UCharacterCreatorMatAttribute;
 class UCharacterCreatorOutfitsSet;
+class UCharacterCreatorGroomsSet;
 class UCharacterCreatorOutfit;
 class UCharacterCreatorOutfitSlot;
 
@@ -30,12 +33,23 @@ public:
 	TMap<FString, UCharacterCreatorAttribute*> Attributes;
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	TArray<UCharacterCreatorMatAttributesSet*> MaterialAttributesSets;
+
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	TMap<FString, UCharacterCreatorMatAttribute*> MaterialAttributes;
+
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	TMap<UCharacterCreatorOutfitSlot*,UCharacterCreatorOutfitsSet*> OutfitSets;
 
 	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
 	TArray<UCharacterCreatorOutfitSlot*> Slots;
 
+	UPROPERTY(EditAnywhere, Category = "CharacterCreation")
+	TMap<UCharacterCreatorOutfitSlot*, UCharacterCreatorGroomsSet*> GroomSets;
+
 	bool ContainsSlot(const FString& SlotID);
+
+	bool ContainsSlot(const UCharacterCreatorOutfitSlot* FindSlot);
 
 	UCharacterCreatorOutfitSlot* GetSlot(const FString& SlotID);
 

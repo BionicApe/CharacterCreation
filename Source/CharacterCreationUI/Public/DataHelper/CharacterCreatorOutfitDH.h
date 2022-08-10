@@ -8,8 +8,8 @@
 
 class UCharacterCreatorOutfit;
 class UCharacterCreatorOutfitsSet;
-class UCharacterCreator;
 class UCharacterCreatorOutfitSlot;
+class UCharacterCreator;
 
 /**
  *
