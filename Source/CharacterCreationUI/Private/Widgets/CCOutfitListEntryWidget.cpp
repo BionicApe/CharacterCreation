@@ -8,7 +8,7 @@
 #include "DataHelper/CharacterCreatorOutfitDH.h"
 #include "Components/Button.h"
 #include "CharacterCreator.h"
-#include <CharacterCreatorOutfitsSet.h>
+#include "CharacterCreatorOutfitsSet.h"
 #include "Components/CharacterCreatorControlComponent.h"
 
 bool UCCOutfitListEntryWidget::Initialize()

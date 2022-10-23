@@ -81,6 +81,9 @@ public:
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_SetBodyType(UCharacterCreator* CharacterCreator, FCharacterCreationBodyType NewBodyType);
 
+	UFUNCTION(BlueprintCallable)
+	void SaveCharacterCreator(UCharacterCreator* CharacterCreator);
+
 	UFUNCTION(Server, Reliable, BlueprintCallable)
 	void Server_SaveCharacterCreator(UCharacterCreator* CharacterCreator);
 

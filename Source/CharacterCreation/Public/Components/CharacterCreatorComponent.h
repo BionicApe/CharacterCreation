@@ -123,6 +123,9 @@ public:
 	void OnAttributeChangedReceived(UCharacterCreatorAttribute* Attribute, float Value);
 
 	UFUNCTION()
+	void SetMorphTarget(const UCharacterCreatorAttribute* Attribute, const float& Value);	
+	
+	UFUNCTION()
 	void OnMaterialAttributeChangedReceived(UCharacterCreatorMatAttribute* MaterialAttribute, float Value);
 
 	UFUNCTION()

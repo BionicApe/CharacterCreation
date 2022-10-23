@@ -7,7 +7,7 @@
 #include "CharacterCreatorGroomsSet.h"
 #include "DataHelper/CharacterCreatorGroomDH.h"
 #include "Components/ListView.h"
-#include <CharacterCreationTypes.h>
+#include "CharacterCreationTypes.h"
 
 bool UCCGroomWidget::Initialize()
 {

@@ -48,15 +48,6 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 		//Actual model load
 		FString const ModelID = JsonCharacterCreator->GetStringField(TEXT("Model"));
 		UCharacterCreatorModel* Model = LoadObject<UCharacterCreatorModel>(nullptr, *ModelID);
-		
-		if (!Model)
-		{
-			//Load default metahuman model if there is no model on the data base
-			FString const MHModelID = TEXT("/Game/ThePrisonCC/CharacterCreation/Models/Metahuman/CM_Metahuman.CM_Metahuman");
-			Model = LoadObject<UCharacterCreatorModel>(nullptr, *ModelID);
-			CharacterCreator->Model = Model;
-		}
-
 		CharacterCreator->Model = Model;
 	}
 

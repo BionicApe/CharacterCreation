@@ -11,7 +11,7 @@ class UCharacterCreatorAttribute;
 /**
  *
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatorAttributesSet : public UObject
 {
 	GENERATED_BODY()

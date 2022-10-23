@@ -12,7 +12,7 @@
 
 class UCharacterCreatorOutfitSlot;
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatorMatAttribute : public UObject
 {
 	GENERATED_BODY()

@@ -8,7 +8,7 @@
 #include "DataHelper/CharacterCreatorGroomDH.h"
 #include "Components/ComboBoxString.h"
 #include "Components/CharacterCreatorControlComponent.h"
-#include <CharacterCreationTypes.h>
+#include "CharacterCreationTypes.h"
 
 bool UCCBodyWidget::Initialize()
 {

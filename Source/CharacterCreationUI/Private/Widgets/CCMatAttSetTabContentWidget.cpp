@@ -8,7 +8,7 @@
 #include "Components/ListView.h"
 #include "DataHelper/CharacterCreatorMaterialAttributeDH.h"
 #include "DataHelper/CharacterCreatorSlotDH.h"
-#include <CharacterCreator.h>
+#include "CharacterCreator.h"
 
 bool UCCMatAttSetTabContentWidget::Initialize()
 {

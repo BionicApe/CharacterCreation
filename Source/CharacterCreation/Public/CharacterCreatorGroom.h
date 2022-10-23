@@ -13,7 +13,7 @@ class UGroomBindingAsset;
 /**
  *
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatorGroom : public UObject
 {
 	GENERATED_BODY()

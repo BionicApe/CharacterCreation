@@ -333,7 +333,7 @@ void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 
 		for (const FCCAttributeValue& AttributeValue : CharacterCreator->AttributeValues)
 		{
-			RootSkeletalMesh->SetMorphTarget(AttributeValue.Attribute->MorphName, AttributeValue.Value);
+			SetMorphTarget(AttributeValue.Attribute,AttributeValue.Value);
 		}
 
 		//Set material attributes for relevant slots
@@ -395,13 +395,16 @@ void UCharacterCreatorComponent::OnAttributeChangedReceived(UCharacterCreatorAtt
 	{
 		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
 	}
+	SetMorphTarget(Attribute, Value);
+}
 
-	if (RootSkeletalMesh && Attribute)
+void UCharacterCreatorComponent::SetMorphTarget(const UCharacterCreatorAttribute* Attribute, const float& Value)
+{
+	if (RootSkeletalMesh && Attribute && RootSkeletalMesh->FindMorphTarget(Attribute->MorphName))
 	{
 		RootSkeletalMesh->SetMorphTarget(Attribute->MorphName, Value);
 	}
 }
-
 void UCharacterCreatorComponent::OnMaterialAttributeChangedReceived(UCharacterCreatorMatAttribute* MaterialAttribute, float Value)
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)

@@ -11,7 +11,7 @@ class UCharacterCreatorGroom;
 /**
  *
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatorGroomsSet : public UObject
 {
 	GENERATED_BODY()
