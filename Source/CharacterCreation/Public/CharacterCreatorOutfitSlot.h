@@ -10,7 +10,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatorOutfitSlot : public UObject
 {
 	GENERATED_BODY()

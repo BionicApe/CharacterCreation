@@ -121,7 +121,7 @@ void UCharacterCreatorControlComponent::Server_SetBodyType_Implementation(UChara
 	}
 }
 
-void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation(UCharacterCreator* CharacterCreator)
+void UCharacterCreatorControlComponent::SaveCharacterCreator(UCharacterCreator* CharacterCreator)
 {
 	if (!CharacterCreator)
 	{
@@ -154,6 +154,11 @@ void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementati
 		//Delegate.BindUObject(this, &UCharacterCreatorControlComponent::OnDaoResponse);
 		Dao->SaveCharacterCreator(CharacterCreator, Delegate);
 	}
+}
+
+void UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation(UCharacterCreator* CharacterCreator)
+{
+	SaveCharacterCreator(CharacterCreator);
 }
 
 void UCharacterCreatorControlComponent::OnDaoResponse(FAsyncCharacterCreatorResponse Response)

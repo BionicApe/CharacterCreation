@@ -23,7 +23,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnCharacterCreatorMaterialAttribut
 /**
  *
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreator : public UObject
 {
 	GENERATED_BODY()
@@ -91,31 +91,46 @@ public:
 
 	TArray<UCharacterCreatorOutfitSlot*> AffectedSlotsOf(UCharacterCreatorMatAttribute* CCAttribute);
 
+	UFUNCTION(BlueprintCallable)
 	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
+	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_AttributeChanged(UCharacterCreatorAttribute* Attribute, float NewValue);
 
 	//Quick fix for material attribute testing, TODO:Interface/Hierarchy the attributes so they share types
+	UFUNCTION(BlueprintCallable)
 	void SetMaterialAttributeValue(UCharacterCreatorMatAttribute* Attribute, float NewValue);
+	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_MaterialAttributeChanged(UCharacterCreatorMatAttribute* Attribute, float NewValue);
 
+	UFUNCTION(BlueprintCallable)
 	void SetMaterialAttributeAffectedSlots(UCharacterCreatorMatAttribute* CCAttribute, UCharacterCreatorOutfitSlot* Slot, bool NewValue);
+	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_MaterialAttributeAffectedSlotChanged(UCharacterCreatorMatAttribute* CCAttribute, UCharacterCreatorOutfitSlot* Slot, bool NewValue);
 
+	UFUNCTION(BlueprintCallable)
 	UCharacterCreatorOutfit* GetSelectedOutfit(UCharacterCreatorOutfitSlot* OutfitSlot);
+
+	UFUNCTION(BlueprintCallable)
 	void SetOutfit(UCharacterCreatorOutfit* Outfit);
+
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_OutfitChanged(UCharacterCreatorOutfit* Outfit);
 
+	UFUNCTION(BlueprintCallable)
 	UCharacterCreatorGroom* GetSelectedGroom(UCharacterCreatorOutfitSlot* OutfitSlot);
+	
+	UFUNCTION(BlueprintCallable)
 	void SetGroom(UCharacterCreatorGroom* Groom);
+
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_GroomChanged(UCharacterCreatorGroom* Groom);
 
 	FCharacterCreationBodyType GetSelectedBodyType();
 	void SetBodyType(FCharacterCreationBodyType NewBodyType);
+	
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_BodyTypeChanged(FCharacterCreationBodyType NewBodyType);
 

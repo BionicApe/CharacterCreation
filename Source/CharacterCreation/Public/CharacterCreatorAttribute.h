@@ -9,7 +9,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class CHARACTERCREATION_API UCharacterCreatorAttribute : public UObject
 {
 	GENERATED_BODY()
