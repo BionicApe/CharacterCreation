@@ -12,7 +12,7 @@
 #include "SSkeletonWidget.h"
 #include "Components/SkinnedMeshComponent.h"
 #include "SkeletalMeshTools/DlgMergeSkeleton.h"
-#include <AssetNotifications.h>
+#include "AssetNotifications.h"
 
 #define LOCTEXT_NAMESPACE "FCCSkeletalMeshTools"
 

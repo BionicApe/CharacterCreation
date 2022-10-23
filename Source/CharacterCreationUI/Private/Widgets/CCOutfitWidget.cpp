@@ -7,7 +7,7 @@
 #include "CharacterCreatorOutfitsSet.h"
 #include "DataHelper/CharacterCreatorOutfitDH.h"
 #include "Components/ListView.h"
-#include <CharacterCreationTypes.h>
+#include "CharacterCreationTypes.h"
 
 bool UCCOutfitWidget::Initialize()
 {

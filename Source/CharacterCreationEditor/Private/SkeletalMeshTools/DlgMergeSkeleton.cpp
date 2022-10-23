@@ -6,7 +6,7 @@
 #include "Widgets/SBoxPanel.h"
 #include "Styling/SlateTypes.h"
 #include "Widgets/Layout/SSeparator.h"
-#include <Widgets/Layout/SScrollBox.h>
+#include "Widgets/Layout/SScrollBox.h"
 
 #define LOCTEXT_NAMESPACE "BADlgMergeSkeleton"
 

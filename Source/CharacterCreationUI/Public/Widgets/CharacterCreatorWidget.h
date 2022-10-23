@@ -11,7 +11,7 @@
 
 class UCharacterCreator;
 class UListView;
-class UHorizontalBox;
+class UVerticalBox;
 class UCCAttributesSetTabWidget;
 class UWidgetSwitcher;
 class UCCAttributesSetTabContentWidget;
@@ -39,7 +39,7 @@ protected:
 	UCharacterCreatorModel* CharacterCreatorModel;
 
 	UPROPERTY(meta = (BindWidget))
-	UHorizontalBox* AttributesTabs;
+	UVerticalBox* AttributesTabs;
 
 	UPROPERTY(meta = (BindWidget))
 	UWidgetSwitcher* AttributesSetSwitcher;

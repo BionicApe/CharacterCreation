@@ -8,7 +8,7 @@
 #include "DataHelper/CharacterCreatorGroomDH.h"
 #include "Components/Button.h"
 #include "CharacterCreator.h"
-#include <CharacterCreatorGroomsSet.h>
+#include "CharacterCreatorGroomsSet.h"
 #include "Components/CharacterCreatorControlComponent.h"
 
 bool UCCGroomListEntryWidget::Initialize()

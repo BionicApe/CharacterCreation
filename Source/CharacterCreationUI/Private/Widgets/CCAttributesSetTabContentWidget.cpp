@@ -9,7 +9,7 @@
 #include "Components/ListView.h"
 #include "DataHelper/CharacterCreatorAttributeDH.h"
 #include "DataHelper/CharacterCreatorSlotDH.h"
-#include <CharacterCreator.h>
+#include "CharacterCreator.h"
 
 bool UCCAttributesSetTabContentWidget::Initialize()
 {

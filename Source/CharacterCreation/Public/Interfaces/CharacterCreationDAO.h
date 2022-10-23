@@ -33,6 +33,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAsyncLoadCharacterCreatorDelegate, 
 //DECLARE_DELEGATE_OneParam(FAsyncSaveCharacterCreatorDelegate, FAsyncCharacterCreatorResponse);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAsyncSaveCharacterCreatorDelegate, FAsyncCharacterCreatorResponse, Response);
 
+
+
 /**
 *
 */
