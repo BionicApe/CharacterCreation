@@ -5,9 +5,6 @@
 #include "UObject/Interface.h"
 #include "CharacterCreatorHUDInterface.generated.h"
 
-class UInventory;
-class AInventoryStore;
-
 /**
 *
 */
