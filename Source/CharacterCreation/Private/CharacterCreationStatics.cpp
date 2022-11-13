@@ -33,9 +33,6 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJsonString(UClass* InClass
 
 UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSharedPtr<FJsonObject> JsonCharacterCreator, UObject* Outer, uint8 InFlags, const FName& CharacterCreatorName)
 {
-	//TODO: INITIAL MODEL ASIGNMENT
-
-
 	//Used to create assets
 	bool bIsCreatingAsset = Outer && Outer->IsA<UPackage>();
 	//End Used to create assets

@@ -5,7 +5,7 @@
 #include "CharacterCreatorAttributesSet.h"
 #include "CharacterCreatorMatAttributeSet.h"
 #include "CharacterCreator.h"
-#include "Components/HorizontalBox.h"
+#include "Components/VerticalBox.h"
 #include "Components/Button.h"
 #include "Blueprint/WidgetTree.h"
 #include "Components/TextBlock.h"
@@ -185,7 +185,7 @@ void UCharacterCreatorWidget::CreateTab(FText TabText, UCCAttributesSetTabWidget
 			});
 
 		//Add Tab Button to the horizontal box
-		UHorizontalBoxSlot* HorizontalBoxSlot = AttributesTabs->AddChildToHorizontalBox(TabWidget);
+		UVerticalBoxSlot* HorizontalBoxSlot = AttributesTabs->AddChildToVerticalBox(TabWidget);
 	}
 }
 
