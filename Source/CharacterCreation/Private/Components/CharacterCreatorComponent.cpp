@@ -17,6 +17,7 @@
 #include "Engine/ActorChannel.h"
 #include "GroomComponent.h"
 #include "GroomBindingAsset.h"
+#include "Logs/CharacterCreationLog.h"
 
 UCharacterCreatorComponent::UCharacterCreatorComponent()
 {
@@ -34,11 +35,11 @@ void UCharacterCreatorComponent::BeginPlay()
 
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	ReloadCurrentCharacterCreator();
@@ -62,11 +63,11 @@ void UCharacterCreatorComponent::OnRep_CharacterCreator()
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	SetCharacterCreator(CharacterCreator);
@@ -75,11 +76,11 @@ void UCharacterCreatorComponent::SetCharacterCreator(UCharacterCreator* NewChara
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	CharacterCreator = NewCharacterCreator;
@@ -90,11 +91,11 @@ void UCharacterCreatorComponent::SetOutfit(UCharacterCreatorOutfit* Outfit)
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	USkeletalMeshComponent* SkComp = SlotSKMeshMap.FindRef(Outfit->Slot);
@@ -124,11 +125,11 @@ void UCharacterCreatorComponent::SetGroom(UCharacterCreatorGroom* NewGroom)
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	UGroomComponent* GroomComp = SlotGroomMap.FindRef(NewGroom->Slot);
@@ -165,11 +166,11 @@ bool UCharacterCreatorComponent::LoadCharacterCreatorFromDatabase()
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	UCharacterCreationSubsystem* CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
@@ -185,11 +186,11 @@ bool UCharacterCreatorComponent::SaveCharacterCreatorToDatabase()
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	UCharacterCreationSubsystem* CCSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<UCharacterCreationSubsystem>();
@@ -205,11 +206,11 @@ void UCharacterCreatorComponent::OnSaveDaoResponse(FAsyncCharacterCreatorRespons
 {
 	if (Response.bIsSuccessful)
 	{
-		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorComponent::OnSaveDaoResponse Succesfully saved."))
+		UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreatorComponent::OnSaveDaoResponse Succesfully saved."))
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UCharacterCreatorComponent::OnSaveDaoResponse error: %s"), *Response.ErrorMessage)
+		UE_LOG(CharacterCreationLog, Error, TEXT("UCharacterCreatorComponent::OnSaveDaoResponse error: %s"), *Response.ErrorMessage)
 	}
 }
 
@@ -217,21 +218,21 @@ void UCharacterCreatorComponent::OnLoadDaoResponse(FAsyncCharacterCreatorRespons
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	if (Response.bIsSuccessful)
 	{
 		SetCharacterCreator(Response.CharacterCreator);
-		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorComponent::OnLoadDaoResponse Succesfully Loaded."))
+		UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreatorComponent::OnLoadDaoResponse Succesfully Loaded."))
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UCharacterCreatorComponent::OnLoadDaoResponse error: %s"), *Response.ErrorMessage)
+		UE_LOG(CharacterCreationLog, Error, TEXT("UCharacterCreatorComponent::OnLoadDaoResponse error: %s"), *Response.ErrorMessage)
 	}
 }
 
@@ -239,11 +240,11 @@ void UCharacterCreatorComponent::OnChangedReceived()
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 	//ReloadCurrentCharacterCreator();
 
@@ -257,11 +258,11 @@ void UCharacterCreatorComponent::ReloadCurrentCharacterCreator()
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	bool bAreDifferent = CharacterCreator != CharacterCreatorLastUsed;
@@ -362,11 +363,11 @@ void UCharacterCreatorComponent::OnOutfitChangedReceived(UCharacterCreatorOutfit
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 	SetOutfit(Outfit);
 }
@@ -375,11 +376,11 @@ void UCharacterCreatorComponent::OnGroomChangedReceived(UCharacterCreatorGroom* 
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 	SetGroom(Groom);
 }
@@ -389,11 +390,11 @@ void UCharacterCreatorComponent::OnAttributeChangedReceived(UCharacterCreatorAtt
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 	SetMorphTarget(Attribute, Value);
 }
@@ -409,11 +410,11 @@ void UCharacterCreatorComponent::OnMaterialAttributeChangedReceived(UCharacterCr
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	if (MaterialAttribute)
@@ -449,11 +450,11 @@ void UCharacterCreatorComponent::OnBodyTypeChangedReceived(FCharacterCreationBod
 {
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	CharacterCreator->BodyType = NewBodyType;

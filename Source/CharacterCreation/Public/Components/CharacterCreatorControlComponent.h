@@ -25,10 +25,10 @@ public:
 
 	//FOnCCMatAttAffectedSlotsChanged OnCCMatAttAffectedSlotsChanged;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated, BlueprintReadOnly)
 	TArray<UCharacterCreator*> CharacterCreators;
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(VisibleAnywhere, Replicated, BlueprintReadOnly)
 	UCharacterCreator* MainCharacterCreator;
 	
 public:

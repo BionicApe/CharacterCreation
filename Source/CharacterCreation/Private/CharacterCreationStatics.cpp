@@ -13,7 +13,7 @@
 #include "CharacterCreatorGroom.h"
 #include "CharacterCreatorOutfitSlot.h"
 #include "CharacterCreatorModel.h"
-
+#include "Logs/CharacterCreationLog.h"
 
 
 UCharacterCreator* UCharacterCreationStatics::LoadFromJsonFile(UClass* InClass, const FString& FilePath, UObject* Outer, uint8 InFlags, const FName& CharacterCreatorName)
@@ -62,7 +62,7 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 		UCharacterCreatorAttribute* Attribute = LoadObject<UCharacterCreatorAttribute>(nullptr, *AttributeId);
 		if (!Attribute)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Can't load UCharacterCreatorAttribute with ID: %s"), *AttributeId);
+			UE_LOG(CharacterCreationLog, Error, TEXT("Can't load UCharacterCreatorAttribute with ID: %s"), *AttributeId);
 			continue;
 		}
 
@@ -81,7 +81,7 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 		UCharacterCreatorMatAttribute* Attribute = LoadObject<UCharacterCreatorMatAttribute>(nullptr, *AttributeId);
 		if (!Attribute)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Can't load UCharacterCreatorMaterialAttribute with ID: %s"), *AttributeId);
+			UE_LOG(CharacterCreationLog, Error, TEXT("Can't load UCharacterCreatorMaterialAttribute with ID: %s"), *AttributeId);
 			continue;
 		}
 
@@ -109,14 +109,14 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 		UCharacterCreatorOutfitSlot* Slot = LoadObject<UCharacterCreatorOutfitSlot>(nullptr, *SlotID);
 		if (!Slot)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Can't load UCharacterCreatorOutfitSlot with ID: %s"), *SlotID);
+			UE_LOG(CharacterCreationLog, Error, TEXT("Can't load UCharacterCreatorOutfitSlot with ID: %s"), *SlotID);
 			continue;
 		}
 
 		//Validation model slot check
 		if (CharacterCreator->Model && !CharacterCreator->Model->ContainsSlot(Slot))
 		{
-			UE_LOG(LogTemp, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
+			UE_LOG(CharacterCreationLog, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
 			continue;
 		}
 
@@ -126,7 +126,7 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 
 		if (!Outfit)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Can't load UCharacterCreatorOutfit with ID: %s"), *OutfitID);
+			UE_LOG(CharacterCreationLog, Error, TEXT("Can't load UCharacterCreatorOutfit with ID: %s"), *OutfitID);
 			continue;
 		}
 
@@ -142,14 +142,14 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 		UCharacterCreatorOutfitSlot* Slot = LoadObject<UCharacterCreatorOutfitSlot>(nullptr, *SlotID);
 		if (!Slot)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Can't load UCharacterCreatorGroomSlot with ID: %s"), *SlotID);
+			UE_LOG(CharacterCreationLog, Error, TEXT("Can't load UCharacterCreatorGroomSlot with ID: %s"), *SlotID);
 			continue;
 		}
 
 		//Validation model slot check
 		if (CharacterCreator->Model && !CharacterCreator->Model->ContainsSlot(Slot))
 		{
-			UE_LOG(LogTemp, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
+			UE_LOG(CharacterCreationLog, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
 			continue;
 		}
 
@@ -158,7 +158,7 @@ UCharacterCreator* UCharacterCreationStatics::LoadFromJson(UClass* InClass, TSha
 		UCharacterCreatorGroom* Groom = LoadObject<UCharacterCreatorGroom>(nullptr, *GroomID);
 		if (!Groom)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Can't load UCharacterCreatorGroom with ID: %s"), *GroomID);
+			UE_LOG(CharacterCreationLog, Error, TEXT("Can't load UCharacterCreatorGroom with ID: %s"), *GroomID);
 			continue;
 		}
 		CharacterCreator->SlotAndGroomArray.Emplace(Slot, Groom);
@@ -177,7 +177,7 @@ TSharedPtr<FJsonObject> UCharacterCreationStatics::ToJson(UCharacterCreator* Cha
 
 	if (!CharacterCreator)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UCharacterCreationStatics::ToJson() Character Creator is nullptr"));
+		UE_LOG(CharacterCreationLog, Error, TEXT("UCharacterCreationStatics::ToJson() Character Creator is nullptr"));
 		return JsonObject;
 	}
 
@@ -192,7 +192,7 @@ TSharedPtr<FJsonObject> UCharacterCreationStatics::ToJson(UCharacterCreator* Cha
 			if (CharacterCreator->Model && !CharacterCreator->Model->ContainsSlot(SlotAndOutfit.Slot))
 			{
 				FString const SlotID = UKismetSystemLibrary::GetPathName(SlotAndOutfit.Slot);
-				UE_LOG(LogTemp, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
+				UE_LOG(CharacterCreationLog, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
 				continue;
 			}
 
@@ -213,7 +213,7 @@ TSharedPtr<FJsonObject> UCharacterCreationStatics::ToJson(UCharacterCreator* Cha
 			if (CharacterCreator->Model && !CharacterCreator->Model->ContainsSlot(SlotAndGroom.Slot))
 			{
 				FString const SlotID = UKismetSystemLibrary::GetPathName(SlotAndGroom.Slot);
-				UE_LOG(LogTemp, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
+				UE_LOG(CharacterCreationLog, Error, TEXT("The UCharacterCreatorOutfitSlot with ID: %s is not valid for the current model"), *SlotID);
 				continue;
 			}
 

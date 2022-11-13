@@ -3,6 +3,7 @@
 
 #include "Subsystems/CharacterCreationSubsystem.h"
 #include "Engine/GameInstance.h"
+#include "Logs/CharacterCreationLog.h"
 
 static const FString ContextString(TEXT("Character Creation"));
 
@@ -13,6 +14,6 @@ void UCharacterCreationSubsystem::Initialize(FSubsystemCollectionBase& Collectio
 
 	if (!DaoOwner)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UCharacterCreationSubsystem::Initialize() Game Instance Doesn't implement ICharacterCreationDAOOwner!!"));
+		UE_LOG(CharacterCreationLog, Error, TEXT("UCharacterCreationSubsystem::Initialize() Game Instance Doesn't implement ICharacterCreationDAOOwner!!"));
 	}
 }

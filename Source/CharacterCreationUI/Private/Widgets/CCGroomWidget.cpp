@@ -32,9 +32,6 @@ void UCCGroomWidget::SetGrooms(TMap<UCharacterCreatorOutfitSlot*, UCharacterCrea
 
 		for (const TPair<UCharacterCreatorOutfitSlot*, UCharacterCreatorGroomsSet*>& pair : GroomsSetMap)
 		{
-			pair.Key;
-			pair.Value;
-
 			UCharacterCreatorGroomDH* DataHolder = NewObject<UCharacterCreatorGroomDH>(this);
 			DataHolder->CharacterCreator = CharacterCreator;
 			DataHolder->GroomsSet = pair.Value;

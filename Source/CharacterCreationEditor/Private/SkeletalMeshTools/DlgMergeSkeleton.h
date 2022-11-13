@@ -27,16 +27,16 @@ struct FBoneCheckboxInfo
 class FDlgMergeSkeleton
 {
 public:
-	enum EResult
+	enum EResult_Merge
 	{
-		Cancel = 0,			// No/Cancel, normal usage would stop the current action
-		Confirm = 1,		// Yes/Ok/Etc, normal usage would continue with action
+		RM_Cancel = 0,			// No/Cancel, normal usage would stop the current action
+		RM_Confirm = 1,		// Yes/Ok/Etc, normal usage would continue with action
 	};
 
 	FDlgMergeSkeleton(USkeletalMesh* InMesh, USkeleton* InSkeleton);
 
 	/**  Shows the dialog box and waits for the user to respond. */
-	EResult ShowModal();
+	EResult_Merge ShowModal();
 
 	// List of required bones for skeleton
 	TArray<int32> RequiredBones;
@@ -71,7 +71,7 @@ public:
 
 private:
 	/** Stores the users response to this dialog */
-	FDlgMergeSkeleton::EResult	 UserResponse;
+	FDlgMergeSkeleton::EResult_Merge	 UserResponse;
 
 	/** The slate container that the bone check boxes get added to */
 	TSharedPtr<SVerticalBox>	 CheckBoxContainer;
@@ -129,7 +129,7 @@ public:
 	 * Returns the EResult of the button which the user pressed. Closing of the dialog
 	 * in any other way than clicking "Ok" results in this returning a "Cancel" value
 	 */
-	FDlgMergeSkeleton::EResult GetUserResponse() const;
+	FDlgMergeSkeleton::EResult_Merge GetUserResponse() const;
 
 	/**
 	 * Returns whether the user selected that bone to be used (checked its respective check box)
@@ -143,5 +143,5 @@ private:
 	 *
 	 * @param ButtonID - The return type of the button which has been pressed.
 	 */
-	FReply OnButtonClick(FDlgMergeSkeleton::EResult ButtonID);
+	FReply OnButtonClick(FDlgMergeSkeleton::EResult_Merge ButtonID);
 };

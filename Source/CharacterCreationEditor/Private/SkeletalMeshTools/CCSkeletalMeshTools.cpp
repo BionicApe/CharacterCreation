@@ -398,7 +398,7 @@ void FCCSkeletalMeshTools::CopyBonesLocation(TWeakPtr<ISkeletalMeshEditor> Ed)
 			// this blocks until the modal is closed
 			const FRefUpdatePoseOptions Options = OptionsModal->ShowModal();
 
-			if (!Options.UpdateType == ERefPoseOptionsReturnType::Cancel)
+			if (Options.UpdateType != ERefPoseOptionsReturnType::Cancel)
 			{
 				const TWeakObjectPtr<UObject> Asset = OptionsModal->GetSelectedAsset();
 				check(Asset.IsValid());
@@ -426,7 +426,7 @@ void FCCSkeletalMeshTools::CopyBonesToPreview(TWeakPtr<ISkeletalMeshEditor> Ed)
 			// this blocks until the modal is closed
 			const FRefUpdatePoseOptions Options = OptionsModal->ShowModal();
 
-			if (!Options.UpdateType == ERefPoseOptionsReturnType::Cancel)
+			if (Options.UpdateType != ERefPoseOptionsReturnType::Cancel)
 			{
 				const TWeakObjectPtr<UObject> Asset = OptionsModal->GetSelectedAsset();
 				check(Asset.IsValid());
@@ -458,7 +458,7 @@ void FCCSkeletalMeshTools::DeleteExtraBones(TWeakPtr<ISkeletalMeshEditor> Ed)
 			// this blocks until the modal is closed
 			const FRefUpdatePoseOptions Options = OptionsModal->ShowModal();
 
-			if (!Options.UpdateType == ERefPoseOptionsReturnType::Cancel)
+			if (Options.UpdateType != ERefPoseOptionsReturnType::Cancel)
 			{
 				const TWeakObjectPtr<UObject> Asset = OptionsModal->GetSelectedAsset();
 				check(Asset.IsValid());
@@ -565,7 +565,7 @@ void FCCSkeletalMeshTools::ForceAssignSkeleton(TWeakPtr<ISkeletalMeshEditor> Ed)
 #pragma endregion Checks
 
 	FDlgMergeSkeleton AssetDlg(SkeletalMesh, SelectedSkeleton);
-	if (AssetDlg.ShowModal() == FDlgMergeSkeleton::Confirm)
+	if (AssetDlg.ShowModal() == FDlgMergeSkeleton::RM_Confirm)
 	{
 		bool const bIsSuccessful = UCharacterCreationEditorLibrary::MergeBonesToBoneTreeDeletingIntermediate(SelectedSkeleton, SkeletalMesh, AssetDlg.RequiredBones);
 		Ed.Pin()->CloseWindow();

@@ -5,7 +5,7 @@
 #include "CharacterCreatorOutfit.h"
 #include "CharacterCreatorOutfitSlot.h"
 #include "Components/TextBlock.h"
-#include "Components/Checkbox.h"
+#include "Components/CheckBox.h"
 #include "Internationalization/Text.h"
 #include "DataHelper/CharacterCreatorSlotDH.h"
 #include "Components/Button.h"

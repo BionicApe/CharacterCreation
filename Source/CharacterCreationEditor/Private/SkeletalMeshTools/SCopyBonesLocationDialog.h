@@ -10,9 +10,9 @@
 
 enum ECopyPoseType
 {
-	Cancel,
-	CurrentPose,
-	SelectedAsset
+	ECPT_Cancel,
+	ECPT_CurrentPose,
+	ECPT_SelectedAsset
 };
 
 
@@ -27,7 +27,7 @@ public:
     SLATE_END_ARGS()
 
         SCopyBonesLocationDialog()
-        : UserResponse(ECopyPoseType::Cancel)
+        : UserResponse(ECopyPoseType::ECPT_Cancel)
 	{
 	}
 

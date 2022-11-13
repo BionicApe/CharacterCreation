@@ -32,9 +32,6 @@ void UCCOutfitWidget::SetOutfits(TMap<UCharacterCreatorOutfitSlot*, UCharacterCr
 
 		for (const TPair<UCharacterCreatorOutfitSlot*, UCharacterCreatorOutfitsSet*>& pair : OutfitsSetMap)
 		{
-			pair.Key;
-			pair.Value;
-
 			UCharacterCreatorOutfitDH* DataHolder = NewObject<UCharacterCreatorOutfitDH>(this);
 			DataHolder->CharacterCreator = CharacterCreator;
 			DataHolder->OutfitsSet = pair.Value;

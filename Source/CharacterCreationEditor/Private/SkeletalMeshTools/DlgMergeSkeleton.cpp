@@ -13,7 +13,7 @@
 //BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SDlgMergeSkeleton::Construct(const FArguments& InArgs)
 {
-	UserResponse = FDlgMergeSkeleton::Cancel;
+	UserResponse = FDlgMergeSkeleton::RM_Cancel;
 	ParentWindow = InArgs._ParentWindow.Get();
 
 	this->ChildSlot[
@@ -90,7 +90,7 @@ void SDlgMergeSkeleton::Construct(const FArguments& InArgs)
 				SNew(SButton)
 				.HAlign(HAlign_Center)
 			.ContentPadding(FEditorStyle::GetMargin("StandardDialog.ContentPadding"))
-			.OnClicked(this, &SDlgMergeSkeleton::OnButtonClick, FDlgMergeSkeleton::Confirm)
+			.OnClicked(this, &SDlgMergeSkeleton::OnButtonClick, FDlgMergeSkeleton::RM_Confirm)
 			.Text(LOCTEXT("SkeletonMergeOk", "OK"))
 			]
 		+ SUniformGridPanel::Slot(1, 0)
@@ -98,7 +98,7 @@ void SDlgMergeSkeleton::Construct(const FArguments& InArgs)
 				SNew(SButton)
 				.HAlign(HAlign_Center)
 			.ContentPadding(FEditorStyle::GetMargin("StandardDialog.ContentPadding"))
-			.OnClicked(this, &SDlgMergeSkeleton::OnButtonClick, FDlgMergeSkeleton::Cancel)
+			.OnClicked(this, &SDlgMergeSkeleton::OnButtonClick, FDlgMergeSkeleton::RM_Cancel)
 			.Text(LOCTEXT("SkeletonMergeCancel", "Cancel"))
 			]
 			]
@@ -157,7 +157,7 @@ void SDlgMergeSkeleton::PopulateOptions(TArray<FBoneCheckboxInfo>& BoneInfos)
 }
 
 
-FDlgMergeSkeleton::EResult SDlgMergeSkeleton::GetUserResponse() const
+FDlgMergeSkeleton::EResult_Merge SDlgMergeSkeleton::GetUserResponse() const
 {
 	return UserResponse;
 }
@@ -170,7 +170,7 @@ bool SDlgMergeSkeleton::IsBoneIncluded(int32 BoneID)
 }
 
 
-FReply SDlgMergeSkeleton::OnButtonClick(FDlgMergeSkeleton::EResult ButtonID)
+FReply SDlgMergeSkeleton::OnButtonClick(FDlgMergeSkeleton::EResult_Merge ButtonID)
 {
 	ParentWindow->RequestDestroyWindow();
 	UserResponse = ButtonID;
@@ -207,7 +207,7 @@ FDlgMergeSkeleton::FDlgMergeSkeleton(USkeletalMesh* InMesh, USkeleton* InSkeleto
 	}
 }
 
-FDlgMergeSkeleton::EResult FDlgMergeSkeleton::ShowModal()
+FDlgMergeSkeleton::EResult_Merge FDlgMergeSkeleton::ShowModal()
 {
 	RequiredBones.Empty();
 
@@ -245,16 +245,16 @@ FDlgMergeSkeleton::EResult FDlgMergeSkeleton::ShowModal()
 			RequiredBones.Add(RefBoneId);
 		}
 
-		return EResult::Confirm;
+		return EResult_Merge::RM_Confirm;
 	}
 
 	DialogWidget->PopulateOptions(BoneInfos);
 
 	//Show Dialog
 	GEditor->EditorAddModalWindow(DialogWindow.ToSharedRef());
-	EResult UserResponse = (EResult)DialogWidget->GetUserResponse();
+	EResult_Merge UserResponse = (EResult_Merge)DialogWidget->GetUserResponse();
 
-	if (UserResponse == EResult::Confirm)
+	if (UserResponse == EResult_Merge::RM_Confirm)
 	{
 		for (int32 RefBoneId = 0; RefBoneId < Mesh->GetRefSkeleton().GetRawBoneNum(); ++RefBoneId)
 		{

@@ -92,6 +92,9 @@ public:
 	TArray<UCharacterCreatorOutfitSlot*> AffectedSlotsOf(UCharacterCreatorMatAttribute* CCAttribute);
 
 	UFUNCTION(BlueprintCallable)
+	void ClearCharacterCreator();
+
+	UFUNCTION(BlueprintCallable)
 	void SetAttributeValue(UCharacterCreatorAttribute* Attribute, float NewValue);
 	
 	UFUNCTION(NetMulticast, Reliable)
@@ -134,6 +137,7 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Multicast_BodyTypeChanged(FCharacterCreationBodyType NewBodyType);
 
+	
 	// Overrides
 	/*
 	virtual bool IsNameStableForNetworking() const override;

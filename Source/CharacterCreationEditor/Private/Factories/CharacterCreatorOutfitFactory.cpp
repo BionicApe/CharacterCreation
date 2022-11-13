@@ -299,7 +299,7 @@ UObject* UCharacterCreatorOutfitFactory::ImportObject(UClass* InClass, UObject* 
 							if (IntValue == INDEX_NONE)
 							{
 								UE_LOG(LogTemp, Error, TEXT("Unable import enum %s from string value %s for property %s"), *Enum->CppType, *CellValue, *PropertyHelper.Property->GetNameCPP());
-								return false;
+								return nullptr;
 							}
 							*ValuePtr = IntValue;
 						}

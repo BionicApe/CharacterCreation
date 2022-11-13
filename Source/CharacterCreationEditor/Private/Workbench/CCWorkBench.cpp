@@ -1,6 +1,6 @@
 // Created by Bionic Ape. All Rights Reserved.
 
-#include "Workbench/CCWorkbench.h"
+#include "Workbench/CCWorkBench.h"
 //#include "Workbench/CCWorkbenchCommands.h"
 #include "Workbench/SCCWorkbench.h"
 

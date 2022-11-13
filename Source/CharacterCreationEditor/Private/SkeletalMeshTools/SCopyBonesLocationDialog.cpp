@@ -179,7 +179,7 @@ void SCopyBonesLocationDialog::Construct(const FArguments& InArgs)
 			.HAlign(HAlign_Left)
 		.ContentPadding(FEditorStyle::GetMargin("StandardDialog.ContentPadding"))
 		.Text(LOCTEXT("Cancel", "Cancel"))
-		.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::Cancel)
+		.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::ECPT_Cancel)
 		.IsEnabled(true)
 		]
 			+ SUniformGridPanel::Slot(1, 0)
@@ -197,7 +197,7 @@ void SCopyBonesLocationDialog::Construct(const FArguments& InArgs)
 				return SelectedOptions.bUpdateMesh || SelectedOptions.bUpdateReferenceSkeleton;
 			})
 		.ToolTipText(LOCTEXT("UseCurrentPoseTooltip", "Use the pose of the preview mesh as the pose source"))
-				.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::CurrentPose)
+				.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::ECPT_CurrentPose)
 		]
 	+ SUniformGridPanel::Slot(2, 0)
 		[
@@ -216,7 +216,7 @@ void SCopyBonesLocationDialog::Construct(const FArguments& InArgs)
 					SelectedOptions.bUpdateMesh || SelectedOptions.bUpdateReferenceSkeleton
 					);
 			})
-		.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::SelectedAsset)
+		.OnClicked(this, &SCopyBonesLocationDialog::OnButtonClick, ECopyPoseType::ECPT_SelectedAsset)
 		]
 
 		]

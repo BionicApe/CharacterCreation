@@ -12,7 +12,8 @@
 #include "CharacterCreatorOutfitSlot.h"
 #include "Engine/ActorChannel.h"
 #include "Net/UnrealNetwork.h"
-
+#include "Logs/CharacterCreationLog.h"
+#include "Logs/CharacterCreationLog.h"
 
 void UCharacterCreator::GetLifetimeReplicatedProps(TArray< class FLifetimeProperty >& OutLifetimeProps) const
 {
@@ -109,6 +110,14 @@ TArray<UCharacterCreatorOutfitSlot*> UCharacterCreator::AffectedSlotsOf(UCharact
 	return RetrievedAffectedSlotsArray;
 }
 
+void UCharacterCreator::ClearCharacterCreator()
+{
+	SlotAndOutfitArray.Empty();
+	SlotAndGroomArray.Empty();
+	AttributeValues.Empty();
+	MaterialAttributeValues.Empty();
+}
+
 void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribute, float NewValue)
 {
 	bool bIsFound = false;
@@ -132,15 +141,15 @@ void UCharacterCreator::SetAttributeValue(UCharacterCreatorAttribute* CCAttribut
 
 void UCharacterCreator::Multicast_AttributeChanged_Implementation(UCharacterCreatorAttribute* Attribute, float NewValue)
 {
-	UE_LOG(LogTemp, Log, TEXT("UCharacterCreator::Multicast_AttributeChanged_Implementation() Called, Attribute: %s and Value: %f"), *Attribute->GetName(), NewValue);
+	UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreator::Multicast_AttributeChanged_Implementation() Called, Attribute: %s and Value: %f"), *Attribute->GetName(), NewValue);
 
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 	OnAttributeChangedDelegate.Broadcast(Attribute, NewValue);
 }
@@ -171,15 +180,15 @@ void UCharacterCreator::SetMaterialAttributeValue(UCharacterCreatorMatAttribute*
 //Quick fix for material attribute testing, TODO:Interface/Hierarchy the attributes so they share types
 void UCharacterCreator::Multicast_MaterialAttributeChanged_Implementation(UCharacterCreatorMatAttribute* MaterialAttribute, float NewValue)
 {
-	UE_LOG(LogTemp, Log, TEXT("UCharacterCreator::Multicast_AttributeChanged_Implementation() Called, Attribute: %s and Value: %f"), *MaterialAttribute->GetName(), NewValue);
+	UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreator::Multicast_AttributeChanged_Implementation() Called, Attribute: %s and Value: %f"), *MaterialAttribute->GetName(), NewValue);
 
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 
 	OnMaterialAttributeChangedDelegate.Broadcast(MaterialAttribute, NewValue);
@@ -193,13 +202,13 @@ void UCharacterCreator::SetMaterialAttributeAffectedSlots(UCharacterCreatorMatAt
 		if (AttributeValue.MaterialAttribute == CCAttribute)
 		{
 			//SetMaterialAttributeAffectedSlots(AttributeValue.MaterialAttribute, 
-			if (bIsChecked) 
+			if (bIsChecked)
 			{
 				//This condition should never be true, the statement is just for security
-				if (!AttributeValue.AffectedSlots.Contains(Slot)) 
+				if (!AttributeValue.AffectedSlots.Contains(Slot))
 				{
 					AttributeValue.AffectedSlots.Emplace(Slot);
-					
+
 					for (FCCMaterialAttributeValue& SharedSlotAttributeValue : MaterialAttributeValues)
 					{
 						if (SharedSlotAttributeValue.MaterialAttribute->TargetSlot == Slot)
@@ -209,10 +218,10 @@ void UCharacterCreator::SetMaterialAttributeAffectedSlots(UCharacterCreatorMatAt
 					}
 				}
 			}
-			else 
+			else
 			{
 				//This condition should never be true, the statement is just for security
-				if (AttributeValue.AffectedSlots.Contains(Slot)) 
+				if (AttributeValue.AffectedSlots.Contains(Slot))
 				{
 					AttributeValue.AffectedSlots.Remove(Slot);
 
@@ -236,15 +245,15 @@ void UCharacterCreator::SetMaterialAttributeAffectedSlots(UCharacterCreatorMatAt
 //Quick fix for material attribute testing, TODO:Interface/Hierarchy the attributes so they share types
 void UCharacterCreator::Multicast_MaterialAttributeAffectedSlotChanged_Implementation(UCharacterCreatorMatAttribute* CCAttribute, UCharacterCreatorOutfitSlot* Slot, bool NewValue)
 {
-	UE_LOG(LogTemp, Log, TEXT("UCharacterCreator::Multicast_MaterialAttributeAffectedSlotChanged_Implementation() Called, Attribute: %s and Value: %f"), *CCAttribute->GetName(), NewValue);
+	UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreator::Multicast_MaterialAttributeAffectedSlotChanged_Implementation() Called, Attribute: %s and Value: %f"), *CCAttribute->GetName(), NewValue);
 
 	if (GEngine->GetNetMode(GetWorld()) == NM_DedicatedServer)
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Server"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Server"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("I'm Client"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("I'm Client"));
 	}
 	//OnMaterialAttributeChangedDelegate.Broadcast(MaterialAttribute, NewValue);
 }
@@ -264,16 +273,20 @@ UCharacterCreatorOutfit* UCharacterCreator::GetSelectedOutfit(UCharacterCreatorO
 void UCharacterCreator::SetOutfit(UCharacterCreatorOutfit* Outfit)
 {
 	bool bIsFound = false;
-	if (Outfit && Outfit->Slot)
+
+	if (!Outfit || !Outfit->Slot)
 	{
-		for (FCCSlotAndOutfit& SlotAndOutfit : SlotAndOutfitArray)
+		UE_LOG(CharacterCreationLog,Error, TEXT("UCharacterCreator::SetOutfit Oufit or Outfit->Slot is/are null"));
+		return;
+	}	
+
+	for (FCCSlotAndOutfit& SlotAndOutfit : SlotAndOutfitArray)
+	{
+		if (SlotAndOutfit.Slot == Outfit->Slot)
 		{
-			if (SlotAndOutfit.Slot == Outfit->Slot)
-			{
-				SlotAndOutfit.Outfit = Outfit;
-				bIsFound = true;
-				break;
-			}
+			SlotAndOutfit.Outfit = Outfit;
+			bIsFound = true;
+			break;
 		}
 	}
 	if (!bIsFound)
@@ -287,8 +300,6 @@ void UCharacterCreator::Multicast_OutfitChanged_Implementation(UCharacterCreator
 {
 	OnOutfitChangedDelegate.Broadcast(Outfit);
 }
-
-
 
 UCharacterCreatorGroom* UCharacterCreator::GetSelectedGroom(UCharacterCreatorOutfitSlot* Slot)
 {
@@ -330,7 +341,7 @@ void UCharacterCreator::Multicast_GroomChanged_Implementation(UCharacterCreatorG
 }
 
 
-FCharacterCreationBodyType UCharacterCreator::GetSelectedBodyType() 
+FCharacterCreationBodyType UCharacterCreator::GetSelectedBodyType()
 {
 	return BodyType;
 }
@@ -341,7 +352,7 @@ void UCharacterCreator::SetBodyType(FCharacterCreationBodyType NewBodyType)
 	Multicast_BodyTypeChanged(NewBodyType);
 }
 
-void UCharacterCreator::Multicast_BodyTypeChanged_Implementation(FCharacterCreationBodyType NewBodyType) 
+void UCharacterCreator::Multicast_BodyTypeChanged_Implementation(FCharacterCreationBodyType NewBodyType)
 {
 	OnBodyTypeChangedDelegate.Broadcast(NewBodyType);
 }

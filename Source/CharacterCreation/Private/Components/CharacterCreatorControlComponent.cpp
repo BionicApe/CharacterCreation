@@ -7,6 +7,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Subsystems/CharacterCreationSubsystem.h"
 #include "Interfaces/CharacterCreationDAO.h"
+#include "Logs/CharacterCreationLog.h"
 
 ////This adds a dependency which might not be necessary, and it is causing a build error
 //#include "DataHelper/CharacterCreatorSlotDH.h"
@@ -125,25 +126,25 @@ void UCharacterCreatorControlComponent::SaveCharacterCreator(UCharacterCreator* 
 {
 	if (!CharacterCreator)
 	{
-		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() CharacterCreator is null"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() CharacterCreator is null"));
 		return;
 	}
 	if (!CharacterCreators.Contains(CharacterCreator))
 	{
-		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() CharacterCreator not found in CharacterCreators"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() CharacterCreator not found in CharacterCreators"));
 		return;
 	}
 
 	if (!GetWorld() || !GetWorld()->GetGameInstance())
 	{
-		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() World is null or GameInstance is null"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() World is null or GameInstance is null"));
 		return;
 	}
 
 	const ICharacterCreationDAOOwner* const DaoOwner = Cast<ICharacterCreationDAOOwner>(GetWorld()->GetGameInstance());
 	if (!DaoOwner)
 	{
-		UE_LOG(LogTemp, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() GameInstance is not ICharacterCreationDAOOwner"));
+		UE_LOG(CharacterCreationLog, Log, TEXT("UCharacterCreatorControlComponent::Server_SaveCharacterCreator_Implementation() GameInstance is not ICharacterCreationDAOOwner"));
 		return;
 	}
 
